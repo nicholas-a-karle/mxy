@@ -29,7 +29,8 @@ package com.mxy.objects;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
-import com.mxy.Database;
+
+import com.mxy.admin.Database;
 
 public class User {
     // Using the classes since Java does references so I don't need to worry about stopping duplication

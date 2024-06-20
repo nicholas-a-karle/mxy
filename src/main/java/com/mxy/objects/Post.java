@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import com.mxy.Database;
+
+import com.mxy.admin.Database;
 
 public class Post {
     private ObjectId postId;

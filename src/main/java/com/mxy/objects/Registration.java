@@ -2,7 +2,8 @@ package com.mxy.objects;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import com.mxy.Database;
+
+import com.mxy.admin.Database;
 
 public class Registration {
     private ObjectId registrationId;

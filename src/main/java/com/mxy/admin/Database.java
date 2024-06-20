@@ -1,6 +1,7 @@
-package com.mxy;
+package com.mxy.admin;
 
-// This class is the definition of overengineering for a project
+
+// This class is the definition of overengineering, I needed 0 of these lines of code
 
 /**
      * This class is meant to control access to the db which stores User Accounts

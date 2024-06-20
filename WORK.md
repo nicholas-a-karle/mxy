@@ -20,7 +20,15 @@
     Day off
 
 ## Day Four (Thursday)
-    Eek! Database -> Objects
+### Eek! 
+### Database -> Objects
+    Group
+    Login
+    Post
+    Registration
+    Repost
+    User
+###
 
 ## Day Five (Friday)
     GUI
