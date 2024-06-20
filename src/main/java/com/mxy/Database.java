@@ -12,21 +12,22 @@ package com.mxy;
      *     _id: <ObjectId>,
      *     username: <String>,
      *     hashword: <String>,
-     *     num_logins: <Integer>,
+     *     numLogins: <Integer>,
      *     logins: List<ObjectId>,
      *     recentLogin: ObjectId,
-     *     num_posts_reposts: <Integer>,
-     *     num_posts: <Integer>,
+     *     registration: ObjectId,
+     *     numPostsReposts: <Integer>,
+     *     numPosts: <Integer>,
      *     posts: List<ObjectId>,
-     *     num_reposts: <Integer>,
+     *     numReposts: <Integer>,
      *     reposts: List<ObjectId>,
-     *     num_followers: <Integer>,
+     *     numFollowers: <Integer>,
      *     followers: List<ObjectId>,
-     *     num_followed: <Integer>,
+     *     numFollowed: <Integer>,
      *     follows: List<ObjectId>,
-     *     num_usergroups: <Integer>,
+     *     numUsergroups: <Integer>,
      *     usergroups: List<ObjectId>,
-     *     num_likes: <Integer>,
+     *     numLikes: <Integer>,
      *     likes: List<ObjectId>
      * }
      * 
@@ -39,14 +40,14 @@ package com.mxy;
      *     replyto: <ObjectId>, // points to another post or null
      *     qouted: <ObjectId>, // points to another post or null
      *     timestamp: <Integer>,
-     *     num_likes: <Integer>,
+     *     numLikes: <Integer>,
      *     likes: List<ObjectId>, // points to user accounts
-     *     num_reposts: <Integer>,
+     *     numReposts: <Integer>,
      *     reposts: List<ObjectId>, // points to the repost object
-     *     num_qoutes: <Integer>,
+     *     numQuotes: <Integer>,
      *     qoutes: <ObjectId>, // points to the post object qouted in
-     *     num_replies: <Integer>,
-     *     num_direct_replies: <Integer>,
+     *     numReplies: <Integer>,
+     *     numDirectReplies: <Integer>,
      *     replies: List<ObjectId>, // points to posts below it
      * }
      * 
@@ -54,7 +55,7 @@ package com.mxy;
      * {
      *     _id: <ObjectId>,
      *     user: <ObjectId>,
-     *     ogpost: <ObjectId>, // original post
+     *     ogPost: <ObjectId>, // original post
      *     timestamp: <Integer>
      * }
      * 
@@ -62,8 +63,8 @@ package com.mxy;
      * {
      *     _id: <ObjectId>,
      *     user: <ObjectId>,
-     *     logintimestamp: <Integer>,
-     *     logouttimestampe: <Integer>
+     *     loginTimestamp: <Integer>,
+     *     logoutTimestampe: <Integer>
      * }
      * 
      * Registration:
@@ -77,7 +78,7 @@ package com.mxy;
      * {
      *     _id: <ObjectId>,
      *     name: <String>,
-     *     num_users: <Integer>
+     *     numUsers: <Integer>
      *     users: List<ObjectId>
      * }
      * 
@@ -158,30 +159,7 @@ public class Database {
             throw new Exception("Username already taken.");
         }
 
-        // Create a new user document
         ObjectId userId = new ObjectId();
-        Document userDoc = new Document("_id", userId)
-                .append("username", username)
-                .append("hashword", hashword)
-                .append("num_logins", 0)
-                .append("logins", new ArrayList<>())
-                .append("recentLogin", null)
-                .append("num_posts_reposts", 0)
-                .append("num_posts", 0)
-                .append("posts", new ArrayList<>())
-                .append("num_reposts", 0)
-                .append("reposts", new ArrayList<>())
-                .append("num_followers", 0)
-                .append("followers", new ArrayList<>())
-                .append("num_followed", 0)
-                .append("followed", new ArrayList<>())
-                .append("num_usergroups", 0)
-                .append("usergroups", new ArrayList<>())
-                .append("num_likes", 0)
-                .append("likes", new ArrayList<>());
-
-        // Insert the user document into the users collection
-        usersCollection.insertOne(userDoc);
 
         // Create a new registration document
         Document registrationDoc = new Document("_id", new ObjectId())
@@ -190,14 +168,39 @@ public class Database {
 
         // Insert the registration document into the registrations collection
         registrationsCollection.insertOne(registrationDoc);
+
+        // Create a new user document
+        Document userDoc = new Document("_id", userId)
+                .append("username", username)
+                .append("hashword", hashword)
+                .append("numLogins", 0)
+                .append("logins", new ArrayList<>())
+                .append("recentLogin", null)
+                .append("registration", registrationDoc.get("_id"))
+                .append("numPostsReposts", 0)
+                .append("numPosts", 0)
+                .append("posts", new ArrayList<>())
+                .append("numReposts", 0)
+                .append("reposts", new ArrayList<>())
+                .append("numFollowers", 0)
+                .append("followers", new ArrayList<>())
+                .append("numFollowed", 0)
+                .append("followed", new ArrayList<>())
+                .append("numUsergroups", 0)
+                .append("usergroups", new ArrayList<>())
+                .append("numLikes", 0)
+                .append("likes", new ArrayList<>());
+
+        // Insert the user document into the users collection
+        usersCollection.insertOne(userDoc);
     }
     /**
      * 
      * @param userId
-     * @param logintimestamp
+     * @param loginTimestamp
      * @throws Exception
      */
-    public void loginUser(ObjectId userId, int logintimestamp) throws Exception {
+    public void loginUser(ObjectId userId, int loginTimestamp) throws Exception {
         // Check if the user exists
         Document userDoc = usersCollection.find(new Document("_id", userId)).first();
         if (userDoc == null) {
@@ -213,8 +216,8 @@ public class Database {
         // Create login document
         Document loginDoc = new Document()
                 .append("user", userId)
-                .append("logintimestamp", logintimestamp)
-                .append("logouttimestamp", -1); // -1 indicates user is currently logged in
+                .append("loginTimestamp", loginTimestamp)
+                .append("logoutTimestamp", -1); // -1 indicates user is currently logged in
 
         // Insert login document
         loginsCollection.insertOne(loginDoc);
@@ -229,10 +232,10 @@ public class Database {
     /**
      * 
      * @param userId
-     * @param logouttimestamp
+     * @param logoutTimestamp
      * @throws Exception
      */
-    public void logoutUser(ObjectId userId, int logouttimestamp) throws Exception {
+    public void logoutUser(ObjectId userId, int logoutTimestamp) throws Exception {
         // Check if the user exists
         Document userDoc = usersCollection.find(new Document("_id", userId)).first();
         if (userDoc == null) {
@@ -249,7 +252,7 @@ public class Database {
         ObjectId loginId = recentLogin.getObjectId("_id");
         loginsCollection.updateOne(
                 new Document("_id", loginId),
-                new Document("$set", new Document("logouttimestamp", logouttimestamp))
+                new Document("$set", new Document("logoutTimestamp", logoutTimestamp))
         );
 
         // Update user's recentLogin and loggedin status
@@ -280,14 +283,14 @@ public class Database {
                 .append("text", text)
                 .append("deleted", false)
                 .append("timestamp", timestamp)
-                .append("num_likes", 0)
+                .append("numLikes", 0)
                 .append("likes", new ArrayList<>())
-                .append("num_reposts", 0)
+                .append("numReposts", 0)
                 .append("reposts", new ArrayList<>())
-                .append("num_quotes", 0)
+                .append("numQuotes", 0)
                 .append("quotes", new ArrayList<>())
-                .append("num_replies", 0)
-                .append("num_direct_replies", 0)
+                .append("numReplies", 0)
+                .append("numDirectReplies", 0)
                 .append("replies", new ArrayList<>());
 
         // Insert post document into posts collection
@@ -296,7 +299,7 @@ public class Database {
         // Update user's post information
         usersCollection.updateOne(
                 new Document("_id", userId),
-                new Document("$inc", new Document("num_posts", 1))
+                new Document("$inc", new Document("numPosts", 1))
                         .append("$push", new Document("posts", postDoc.getObjectId("_id")))
         );
     }
@@ -331,14 +334,14 @@ public class Database {
                 .append("deleted", false)
                 .append("quoted", quotedPostId)
                 .append("timestamp", timestamp)
-                .append("num_likes", 0)
+                .append("numLikes", 0)
                 .append("likes", new ArrayList<>())
-                .append("num_reposts", 0)
+                .append("numReposts", 0)
                 .append("reposts", new ArrayList<>())
-                .append("num_quotes", 0)
+                .append("numQuotes", 0)
                 .append("quotes", new ArrayList<>())
-                .append("num_replies", 0)
-                .append("num_direct_replies", 0)
+                .append("numReplies", 0)
+                .append("numDirectReplies", 0)
                 .append("replies", new ArrayList<>());
 
         // Insert quote post document into posts collection
@@ -347,14 +350,14 @@ public class Database {
         // Update quoted post with the new quote
         postsCollection.updateOne(
                 new Document("_id", quotedPostId),
-                new Document("$inc", new Document("num_quotes", 1))
+                new Document("$inc", new Document("numQuotes", 1))
                         .append("$push", new Document("quotes", quotePostDoc.getObjectId("_id")))
         );
 
         // Update user's post information
         usersCollection.updateOne(
                 new Document("_id", userId),
-                new Document("$inc", new Document("num_posts", 1))
+                new Document("$inc", new Document("numPosts", 1))
                         .append("$push", new Document("posts", quotePostDoc.getObjectId("_id")))
         );
     }
@@ -390,14 +393,14 @@ public class Database {
                 .append("deleted", false)
                 .append("replyto", replyToPostId)
                 .append("timestamp", timestamp)
-                .append("num_likes", 0)
+                .append("numLikes", 0)
                 .append("likes", new ArrayList<>())
-                .append("num_reposts", 0)
+                .append("numReposts", 0)
                 .append("reposts", new ArrayList<>())
-                .append("num_quotes", 0)
+                .append("numQuotes", 0)
                 .append("quotes", new ArrayList<>())
-                .append("num_replies", 0)
-                .append("num_direct_replies", 0)
+                .append("numReplies", 0)
+                .append("numDirectReplies", 0)
                 .append("replies", new ArrayList<>());
 
         // Insert reply post document into posts collection
@@ -406,14 +409,14 @@ public class Database {
         // Update reply-to post with the new reply
         postsCollection.updateOne(
                 new Document("_id", replyToPostId),
-                new Document("$inc", new Document("num_replies", 1))
+                new Document("$inc", new Document("numReplies", 1))
                         .append("$push", new Document("replies", replyPostDoc.getObjectId("_id")))
         );
 
         // Update user's post information
         usersCollection.updateOne(
                 new Document("_id", userId),
-                new Document("$inc", new Document("num_posts", 1))
+                new Document("$inc", new Document("numPosts", 1))
                         .append("$push", new Document("posts", replyPostDoc.getObjectId("_id")))
         );
     }
@@ -457,7 +460,7 @@ public class Database {
         usersCollection.updateOne(
             new Document("_id", userId),
             new Document("$pull", new Document("posts", postId))
-                    .append("$inc", new Document("num_posts", -1))
+                    .append("$inc", new Document("numPosts", -1))
         );
 
         // Remove the post from the likes of any users who liked it
@@ -466,7 +469,7 @@ public class Database {
             usersCollection.updateOne(
                 new Document("_id", likerId),
                 new Document("$pull", new Document("likes", postId))
-                        .append("$inc", new Document("num_likes", -1))
+                        .append("$inc", new Document("numLikes", -1))
             );
         }
 
@@ -497,7 +500,7 @@ public class Database {
         ObjectId userId = postDoc.getObjectId("user");
         usersCollection.updateOne(
             new Document("_id", userId),
-            new Document("$inc", new Document("num_posts", -1))
+            new Document("$inc", new Document("numPosts", -1))
                     .append("$pull", new Document("posts", postId))
         );
     }
@@ -532,11 +535,11 @@ public class Database {
     /**
      * Creates a new repost of an original post by a user.
      * @param userId ObjectId of the user creating the repost
-     * @param ogpostId ObjectId of the original post being reposted
+     * @param ogPostId ObjectId of the original post being reposted
      * @param timestamp Timestamp of when the repost was created
      * @throws Exception If user does not exist, original post does not exist, or there is an error creating the repost
      */
-    public void createRepost(ObjectId userId, ObjectId ogpostId, int timestamp) throws Exception {
+    public void createRepost(ObjectId userId, ObjectId ogPostId, int timestamp) throws Exception {
         // Check if the user exists
         Document userDoc = usersCollection.find(new Document("_id", userId)).first();
         if (userDoc == null) {
@@ -544,16 +547,16 @@ public class Database {
         }
 
         // Check if the original post exists
-        Document originalPostDoc = postsCollection.find(new Document("_id", ogpostId)).first();
+        Document originalPostDoc = postsCollection.find(new Document("_id", ogPostId)).first();
         if (originalPostDoc == null) {
-            throw new Exception("Original post with ID " + ogpostId + " does not exist.");
+            throw new Exception("Original post with ID " + ogPostId + " does not exist.");
         }
 
         // Create repost document
         Document repostDoc = new Document()
                 .append("_id", new ObjectId())
                 .append("user", userId)
-                .append("ogpost", ogpostId)
+                .append("ogPost", ogPostId)
                 .append("timestamp", timestamp);
 
         // Insert repost document into reposts collection
@@ -561,8 +564,8 @@ public class Database {
 
         // Update original post with the new repost
         postsCollection.updateOne(
-                new Document("_id", ogpostId),
-                new Document("$inc", new Document("num_reposts", 1))
+                new Document("_id", ogPostId),
+                new Document("$inc", new Document("numReposts", 1))
                         .append("$push", new Document("reposts", repostDoc.getObjectId("_id")))
         );
     }
@@ -582,7 +585,7 @@ public class Database {
 
         // Get the user and original post from the repost document
         ObjectId userId = repostDoc.getObjectId("user");
-        ObjectId ogpostId = repostDoc.getObjectId("ogpost");
+        ObjectId ogPostId = repostDoc.getObjectId("ogPost");
 
         // Check if the user exists
         Document userDoc = usersCollection.find(new Document("_id", userId)).first();
@@ -591,9 +594,9 @@ public class Database {
         }
 
         // Check if the original post exists
-        Document originalPostDoc = postsCollection.find(new Document("_id", ogpostId)).first();
+        Document originalPostDoc = postsCollection.find(new Document("_id", ogPostId)).first();
         if (originalPostDoc == null) {
-            throw new Exception("Original post with ID " + ogpostId + " does not exist.");
+            throw new Exception("Original post with ID " + ogPostId + " does not exist.");
         }
 
         // Delete the repost document from the reposts collection
@@ -601,8 +604,8 @@ public class Database {
 
         // Update the original post to remove the repost
         postsCollection.updateOne(
-                new Document("_id", ogpostId),
-                new Document("$inc", new Document("num_reposts", -1))
+                new Document("_id", ogPostId),
+                new Document("$inc", new Document("numReposts", -1))
                         .append("$pull", new Document("reposts", repostId))
         );
 
@@ -629,7 +632,7 @@ public class Database {
         }
 
         // Update the post document to increment likes and add userId to likes list
-        int numLikes = postDoc.getInteger("num_likes", 0);
+        int numLikes = postDoc.getInteger("numLikes", 0);
         List<ObjectId> likes = postDoc.getList("likes", ObjectId.class, new ArrayList<>());
 
         // Check if the user has already liked the post
@@ -643,7 +646,7 @@ public class Database {
 
         // Update the post document in the collection
         postsCollection.updateOne(new Document("_id", postId),
-                new Document("$set", new Document("num_likes", numLikes).append("likes", likes)));
+                new Document("$set", new Document("numLikes", numLikes).append("likes", likes)));
 
         // Find the user in the database
         Document userDoc = usersCollection.find(new Document("_id", userId)).first();
@@ -693,7 +696,7 @@ public class Database {
         // Update the post document in the collection
         postsCollection.updateOne(
             new Document("_id", postId),
-            new Document("$set", new Document("num_likes", numLikes).append("likes", likes))
+            new Document("$set", new Document("numLikes", numLikes).append("likes", likes))
         );
 
         // Find the user in the database
@@ -745,7 +748,7 @@ public class Database {
         usersCollection.updateOne(
             new Document("_id", followedId),
             new Document("$set", new Document("followers", followers))
-            .append("$inc", new Document("num_followers", 1))
+            .append("$inc", new Document("numFollowers", 1))
         );
 
         // Update the follower user's followed list
@@ -754,7 +757,7 @@ public class Database {
         usersCollection.updateOne(
             new Document("_id", followerId),
             new Document("$set", new Document("followed", followed))
-            .append("$inc", new Document("num_followed", 1))
+            .append("$inc", new Document("numFollowed", 1))
         );
     }
 
@@ -788,7 +791,7 @@ public class Database {
         usersCollection.updateOne(
             new Document("_id", followedId),
             new Document("$set", new Document("followers", followers))
-            .append("$inc", new Document("num_followers", -1))
+            .append("$inc", new Document("numFollowers", -1))
         );
 
         // Update the follower user's followed list
@@ -797,7 +800,7 @@ public class Database {
         usersCollection.updateOne(
             new Document("_id", followerId),
             new Document("$set", new Document("followed", followed))
-            .append("$inc", new Document("num_followed", -1))
+            .append("$inc", new Document("numFollowed", -1))
         );
     }
 
@@ -831,7 +834,7 @@ public class Database {
         groupsCollection.updateOne(
             new Document("_id", groupId),
             new Document("$set", new Document("users", groupUsers))
-            .append("$inc", new Document("num_users", 1))
+            .append("$inc", new Document("numUsers", 1))
         );
 
         // Update the user's usergroups list
@@ -840,7 +843,7 @@ public class Database {
         usersCollection.updateOne(
             new Document("_id", userId),
             new Document("$set", new Document("usergroups", userGroups))
-            .append("$inc", new Document("num_usergroups", 1))
+            .append("$inc", new Document("numUsergroups", 1))
         );
     }
 
@@ -873,7 +876,7 @@ public class Database {
         groupsCollection.updateOne(
             new Document("_id", groupId),
             new Document("$set", new Document("users", groupUsers))
-            .append("$inc", new Document("num_users", -1))
+            .append("$inc", new Document("numUsers", -1))
         );
 
         // Update the user's usergroups list
@@ -882,7 +885,7 @@ public class Database {
         usersCollection.updateOne(
             new Document("_id", userId),
             new Document("$set", new Document("usergroups", userGroups))
-            .append("$inc", new Document("num_usergroups", -1))
+            .append("$inc", new Document("numUsergroups", -1))
         );
     }
 
@@ -903,7 +906,7 @@ public class Database {
         ObjectId groupId = new ObjectId();
         Document groupDoc = new Document("_id", groupId)
                 .append("name", groupName)
-                .append("num_users", 0)
+                .append("numUsers", 0)
                 .append("users", new ArrayList<>());
 
         // Insert the group document into the groups collection
@@ -930,7 +933,7 @@ public class Database {
             usersCollection.updateOne(
                 new Document("_id", userId),
                 new Document("$pull", new Document("usergroups", groupId))
-                .append("$inc", new Document("num_usergroups", -1))
+                .append("$inc", new Document("numUsergroups", -1))
             );
         }
 
@@ -961,19 +964,108 @@ public class Database {
         return groupsCollection;
     }
 
-    // TODO: Retrieve User Object from UserId
+    // Assuming you have a method to retrieve a user Document by userId
+    public Document getUserById(ObjectId userId) {
+        // Example of how you might retrieve a user document from your collection
+        return usersCollection.find(new Document("_id", userId)).first();
+    }
 
-    // TODO: Retrieve User Object from username
+    // Getters for User Document fields
 
-    // TODO: Retrieve UserId from username
+    public String getUserUsername(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getString("username");
+    }
 
-    // TODO: Retrieve User Posts
+    public String getUserHashword(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getString("hashword");
+    }
 
-    // TODO: Retrieve User Reposts
+    public int getUserNumLogins(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getInteger("numLogins");
+    }
 
-    // TODO: Retrieve User Posts and Reposts
+    public List<ObjectId> getUserLogins(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return (List<ObjectId>) userDoc.get("logins");
+    }
 
-    // TODO: Retrieve User Posts and Reposts mixed
+    public ObjectId getUserRecentLogin(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return (ObjectId) userDoc.get("recentLogin");
+    }
+
+    public ObjectId getUserRegistration(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return (ObjectId) userDoc.get("registration");
+    }
+
+    public int getUserNumPostsReposts(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getInteger("numPostsReposts");
+    }
+
+    public int getUserNumPosts(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getInteger("numPosts");
+    }
+
+    public List<ObjectId> getUserPosts(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return (List<ObjectId>) userDoc.get("posts");
+    }
+
+    public int getUserNumReposts(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getInteger("numReposts");
+    }
+
+    public List<ObjectId> getUserReposts(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return (List<ObjectId>) userDoc.get("reposts");
+    }
+
+    public int getUserNumFollowers(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getInteger("numFollowers");
+    }
+
+    public List<ObjectId> getUserFollowers(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return (List<ObjectId>) userDoc.get("followers");
+    }
+
+    public int getUserNumFollowed(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getInteger("numFollowed");
+    }
+
+    public List<ObjectId> getUserFollows(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return (List<ObjectId>) userDoc.get("followed");
+    }
+
+    public int getUserNumUsergroups(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getInteger("numUsergroups");
+    }
+
+    public List<ObjectId> getUserUsergroups(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return (List<ObjectId>) userDoc.get("usergroups");
+    }
+
+    public int getUserNumLikes(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getInteger("numLikes");
+    }
+
+    public List<ObjectId> getUserLikes(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return (List<ObjectId>) userDoc.get("likes");
+    }
 
 //#endregion
 

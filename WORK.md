@@ -14,9 +14,13 @@
     Joining Groups
 
 ## Day Two (Tuesday)
+    Flight
 
 ## Day Three (Wednesday)
+    Day off
 
 ## Day Four (Thursday)
+    Eek! Database -> Objects
 
 ## Day Five (Friday)
+    GUI
