@@ -1,5 +1,31 @@
 package com.mxy.objects;
 
+/*
+    * User:    
+     * {
+     *     _id: <ObjectId>,
+     *     username: <String>,
+     *     hashword: <String>,
+     *     numLogins: <Integer>,
+     *     logins: List<ObjectId>,
+     *     recentLogin: ObjectId,
+     *     registration: ObjectId,
+     *     numPostsReposts: <Integer>,
+     *     numPosts: <Integer>,
+     *     posts: List<ObjectId>,
+     *     numReposts: <Integer>,
+     *     reposts: List<ObjectId>,
+     *     numFollowers: <Integer>,
+     *     followers: List<ObjectId>,
+     *     numFollowed: <Integer>,
+     *     follows: List<ObjectId>,
+     *     numUsergroups: <Integer>,
+     *     usergroups: List<ObjectId>,
+     *     numLikes: <Integer>,
+     *     likes: List<ObjectId>
+     * }
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -206,133 +232,74 @@ public class User {
     }
 
     public void retrieveAll() {
-        // Retrieve username
-        if (username == null) {
-            username = database.getUserUsername(userId);
+        username = database.getUserUsername(userId);
+        hashword = database.getUserHashword(userId);
+        numLogins = database.getUserNumLogins(userId);
+
+        // Retrieve Logins, recentLogin, and registration
+        List<ObjectId> idLogins = database.getUserLogins(userId);
+        logins = new ArrayList<>();
+        for (ObjectId id : idLogins) {
+            logins.add(new Login(id, database));
         }
-    
-        // Retrieve hashword
-        if (hashword == null) {
-            hashword = database.getUserHashword(userId);
-        }
-    
-        // Retrieve number of logins
-        if (numLogins == null) {
-            numLogins = database.getUserNumLogins(userId);
-        }
-    
-        // Retrieve logins
-        if (logins == null) {
-            List<ObjectId> idLogins = database.getUserLogins(userId);
-            logins = new ArrayList<>();
-            for (ObjectId id : idLogins) {
-                logins.add(new Login(id, database));
-            }
-        }
-    
-        // Retrieve recent login
-        if (recentLogin == null) {
-            ObjectId recentLoginId = database.getUserRecentLogin(userId);
-            if (recentLoginId != null) {
-                recentLogin = new Login(recentLoginId, database);
-            }
-        }
-    
-        // Retrieve registration
-        if (registration == null) {
-            ObjectId registrationId = database.getUserRegistration(userId);
-            if (registrationId != null) {
-                registration = new Registration(registrationId, database);
-            }
-        }
-    
-        // Retrieve number of posts and reposts
-        if (numPostsReposts == null) {
-            numPostsReposts = database.getUserNumPostsReposts(userId);
-        }
-    
-        // Retrieve number of posts
-        if (numPosts == null) {
-            numPosts = database.getUserNumPosts(userId);
-        }
-    
+        ObjectId recentLoginId = database.getUserRecentLogin(userId);
+        if (recentLoginId != null) recentLogin = new Login(recentLoginId, database);
+        ObjectId registrationId = database.getUserRegistration(userId);
+        if (registrationId != null) registration = new Registration(registrationId, database);
+
+        numPostsReposts = database.getUserNumPostsReposts(userId);
+        numPosts = database.getUserNumPosts(userId);
+
         // Retrieve posts
-        if (posts == null) {
-            List<ObjectId> postIds = database.getUserPosts(userId);
-            posts = new ArrayList<>();
-            for (ObjectId id : postIds) {
-                posts.add(new Post(id, database));
-            }
+        List<ObjectId> postIds = database.getUserPosts(userId);
+        posts = new ArrayList<>();
+        for (ObjectId id : postIds) {
+            posts.add(new Post(id, database));
         }
     
-        // Retrieve number of reposts
-        if (numReposts == null) {
-            numReposts = database.getUserNumReposts(userId);
-        }
+        numReposts = database.getUserNumReposts(userId);
     
         // Retrieve reposts
-        if (reposts == null) {
-            List<ObjectId> repostIds = database.getUserReposts(userId);
-            reposts = new ArrayList<>();
-            for (ObjectId id : repostIds) {
-                reposts.add(new Repost(id, database));
-            }
+        List<ObjectId> repostIds = database.getUserReposts(userId);
+        reposts = new ArrayList<>();
+        for (ObjectId id : repostIds) {
+            reposts.add(new Repost(id, database));
         }
     
-        // Retrieve number of followers
-        if (numFollowers == null) {
-            numFollowers = database.getUserNumFollowers(userId);
-        }
+        numFollowers = database.getUserNumFollowers(userId);
     
         // Retrieve followers
-        if (followers == null) {
-            List<ObjectId> followerIds = database.getUserFollowers(userId);
-            followers = new ArrayList<>();
-            for (ObjectId id : followerIds) {
-                followers.add(new User(id, database));
-            }
+        List<ObjectId> followerIds = database.getUserFollowers(userId);
+        followers = new ArrayList<>();
+        for (ObjectId id : followerIds) {
+            followers.add(new User(id, database));
         }
     
-        // Retrieve number of followed users
-        if (numFollowed == null) {
-            numFollowed = database.getUserNumFollowed(userId);
-        }
-    
+        numFollowed = database.getUserNumFollowed(userId);
+        
         // Retrieve followed users
-        if (follows == null) {
-            List<ObjectId> followIds = database.getUserFollows(userId);
-            follows = new ArrayList<>();
-            for (ObjectId id : followIds) {
-                follows.add(new User(id, database));
-            }
+        List<ObjectId> followIds = database.getUserFollows(userId);
+        follows = new ArrayList<>();
+        for (ObjectId id : followIds) {
+            follows.add(new User(id, database));
         }
     
-        // Retrieve number of user groups
-        if (numUsergroups == null) {
-            numUsergroups = database.getUserNumUsergroups(userId);
-        }
+        numUsergroups = database.getUserNumUsergroups(userId);
     
         // Retrieve user groups
-        if (usergroups == null) {
-            List<ObjectId> groupIds = database.getUserUsergroups(userId);
-            usergroups = new ArrayList<>();
-            for (ObjectId id : groupIds) {
-                usergroups.add(new Group(id, database));
-            }
+        List<ObjectId> groupIds = database.getUserUsergroups(userId);
+        usergroups = new ArrayList<>();
+        for (ObjectId id : groupIds) {
+            usergroups.add(new Group(id, database));
         }
     
-        // Retrieve number of likes
-        if (numLikes == null) {
-            numLikes = database.getUserNumLikes(userId);
-        }
+        numLikes = database.getUserNumLikes(userId);
     
         // Retrieve likes
-        if (likes == null) {
-            List<ObjectId> likeIds = database.getUserLikes(userId);
-            likes = new ArrayList<>();
-            for (ObjectId id : likeIds) {
-                likes.add(new Post(id, database));
-            }
+        List<ObjectId> likeIds = database.getUserLikes(userId);
+        likes = new ArrayList<>();
+        for (ObjectId id : likeIds) {
+            likes.add(new Post(id, database));
         }
     }
     

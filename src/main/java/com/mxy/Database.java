@@ -1067,6 +1067,190 @@ public class Database {
         return (List<ObjectId>) userDoc.get("likes");
     }
 
+    // Getting a post by postId
+    public Document getPostById(ObjectId postId) {
+        return postsCollection.find(new Document("_id", postId)).first();
+    }
+
+    // Getting the user of a post by postId
+    public ObjectId getPostUser(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return (ObjectId) postDoc.get("user");
+    }
+
+    // Getting the text of a post by postId
+    public String getPostText(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return postDoc.getString("text");
+    }
+
+    // Getting the deleted status of a post by postId
+    public Boolean getPostDeleted(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return postDoc.getBoolean("deleted");
+    }
+
+    // Getting the replyto of a post by postId
+    public ObjectId getPostReplyTo(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return (ObjectId) postDoc.get("replyto");
+    }
+
+    // Getting the quoted post by postId
+    public ObjectId getPostQuoted(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return (ObjectId) postDoc.get("quoted");
+    }
+
+    // Getting the timestamp of a post by postId
+    public Integer getPostTimestamp(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return postDoc.getInteger("timestamp");
+    }
+
+    // Getting the number of likes of a post by postId
+    public Integer getPostNumLikes(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return postDoc.getInteger("numLikes");
+    }
+
+    // Getting the likes of a post by postId
+    public List<ObjectId> getPostLikes(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return (List<ObjectId>) postDoc.get("likes");
+    }
+
+    // Getting the number of reposts of a post by postId
+    public Integer getPostNumReposts(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return postDoc.getInteger("numReposts");
+    }
+
+    // Getting the reposts of a post by postId
+    public List<ObjectId> getPostReposts(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return (List<ObjectId>) postDoc.get("reposts");
+    }
+
+    // Getting the number of quotes of a post by postId
+    public Integer getPostNumQuotes(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return postDoc.getInteger("numQuotes");
+    }
+
+    // Getting the quotes of a post by postId
+    public ObjectId getPostQuotes(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return (ObjectId) postDoc.get("quotes");
+    }
+
+    // Getting the number of replies of a post by postId
+    public Integer getPostNumReplies(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return postDoc.getInteger("numReplies");
+    }
+
+    // Getting the number of direct replies of a post by postId
+    public Integer getPostNumDirectReplies(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return postDoc.getInteger("numDirectReplies");
+    }
+
+    // Getting the replies of a post by postId
+    public List<ObjectId> getPostReplies(ObjectId postId) {
+        Document postDoc = getPostById(postId);
+        return (List<ObjectId>) postDoc.get("replies");
+    }
+
+
+    // Getting a repost by repostId
+    public Document getRepostById(ObjectId repostId) {
+        return repostsCollection.find(new Document("_id", repostId)).first();
+    }
+
+    // Getting the user of a repost by repostId
+    public ObjectId getRepostUser(ObjectId repostId) {
+        Document repostDoc = getRepostById(repostId);
+        return (ObjectId) repostDoc.get("user");
+    }
+
+    // Getting the original post of a repost by repostId
+    public ObjectId getRepostOgPost(ObjectId repostId) {
+        Document repostDoc = getRepostById(repostId);
+        return (ObjectId) repostDoc.get("ogPost");
+    }
+
+    // Getting the timestamp of a repost by repostId
+    public Integer getRepostTimestamp(ObjectId repostId) {
+        Document repostDoc = getRepostById(repostId);
+        return repostDoc.getInteger("timestamp");
+    }
+
+
+    // Getting a login by loginId
+    public Document getLoginById(ObjectId loginId) {
+        return loginsCollection.find(new Document("_id", loginId)).first();
+    }
+
+    // Getting the user of a login by loginId
+    public ObjectId getLoginUser(ObjectId loginId) {
+        Document loginDoc = getLoginById(loginId);
+        return (ObjectId) loginDoc.get("user");
+    }
+
+    // Getting the login timestamp of a login by loginId
+    public Integer getLoginLoginTimestamp(ObjectId loginId) {
+        Document loginDoc = getLoginById(loginId);
+        return loginDoc.getInteger("loginTimestamp");
+    }
+
+    // Getting the logout timestamp of a login by loginId
+    public Integer getLoginLogoutTimestamp(ObjectId loginId) {
+        Document loginDoc = getLoginById(loginId);
+        return loginDoc.getInteger("logoutTimestamp");
+    }
+
+
+    // Getting a registration by registrationId
+    public Document getRegistrationById(ObjectId registrationId) {
+        return registrationsCollection.find(new Document("_id", registrationId)).first();
+    }
+
+    // Getting the user of a registration by registrationId
+    public ObjectId getRegistrationUser(ObjectId registrationId) {
+        Document registrationDoc = getRegistrationById(registrationId);
+        return (ObjectId) registrationDoc.get("user");
+    }
+
+    // Getting the timestamp of a registration by registrationId
+    public Integer getRegistrationTimestamp(ObjectId registrationId) {
+        Document registrationDoc = getRegistrationById(registrationId);
+        return registrationDoc.getInteger("timestamp");
+    }
+
+
+    // Getting a group by groupId
+    public Document getGroupById(ObjectId groupId) {
+        return groupsCollection.find(new Document("_id", groupId)).first();
+    }
+
+    // Getting the name of a group by groupId
+    public String getGroupName(ObjectId groupId) {
+        Document groupDoc = getGroupById(groupId);
+        return groupDoc.getString("name");
+    }
+
+    // Getting the number of users in a group by groupId
+    public Integer getGroupNumUsers(ObjectId groupId) {
+        Document groupDoc = getGroupById(groupId);
+        return groupDoc.getInteger("numUsers");
+    }
+
+    // Getting the list of users in a group by groupId
+    public List<ObjectId> getGroupUsers(ObjectId groupId) {
+        Document groupDoc = getGroupById(groupId);
+        return (List<ObjectId>) groupDoc.get("users");
+    }
 //#endregion
 
 }
