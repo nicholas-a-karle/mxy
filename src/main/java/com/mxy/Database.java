@@ -141,27 +141,8 @@ public class Database {
         groupsCollection = mongoDatabase.getCollection("groups");
     }
 
-    // Getters for the collections
-    public MongoCollection<Document> getUsersCollection() {
-        return usersCollection;
-    }
-
-    public MongoCollection<Document> getPostsCollection() {
-        return postsCollection;
-    }
-
-    public MongoCollection<Document> getLoginsCollection() {
-        return loginsCollection;
-    }
-
-    public MongoCollection<Document> getRegistrationsCollection() {
-        return registrationsCollection;
-    }
-
-    public MongoCollection<Document> getGroupsCollection() {
-        return groupsCollection;
-    }
-
+// All Modification Functions
+//#region
     /**
      * Method to register a new user
      *
@@ -277,10 +258,6 @@ public class Database {
                 new Document("$set", new Document("recentLogin", null).append("loggedin", false))
         );
     }
-
-    // TODO: loginIntegrityCheck
-
-    // TODO: loginIntegrityFix
 
     /**
      * Creates a new post for a user.
@@ -526,6 +503,33 @@ public class Database {
     }
 
     /**
+     * Deletes a post. Depending on the nuclearOption parameter, it either performs a nuclear delete (removing all references to the post)
+     * or a soft delete (marking the post as deleted).
+     *
+     * @param postId Id of the post to be deleted.
+     * @param nuclearOption If true, performs a nuclear delete; if false, performs a soft delete.
+     * @throws Exception if an error occurs during the delete operation.
+     */
+    public void deletePost(ObjectId postId, boolean nuclearOption) throws Exception {
+        if (nuclearOption) {
+            nuclearDeletePost(postId);
+        } else {
+            softDeletePost(postId);
+        }
+    }
+
+    /**
+     * Deletes a post using the default delete option (soft delete).
+     *
+     * @param postId Id of the post to be deleted.
+     * @throws Exception if an error occurs during the delete operation.
+     */
+    public void deletePost(ObjectId postId) throws Exception {
+        softDeletePost(postId);
+    }
+
+
+    /**
      * Creates a new repost of an original post by a user.
      * @param userId ObjectId of the user creating the repost
      * @param ogpostId ObjectId of the original post being reposted
@@ -563,7 +567,52 @@ public class Database {
         );
     }
 
-    // TODO: deleteRepost
+    /**
+     * Deletes a repost by a user.
+     *
+     * @param repostId ObjectId of the repost to be deleted
+     * @throws Exception If repost does not exist, user does not exist, or there is an error deleting the repost
+     */
+    public void deleteRepost(ObjectId repostId) throws Exception {
+        // Find the repost in the database
+        Document repostDoc = repostsCollection.find(new Document("_id", repostId)).first();
+        if (repostDoc == null) {
+            throw new Exception("Repost with ID " + repostId + " not found.");
+        }
+
+        // Get the user and original post from the repost document
+        ObjectId userId = repostDoc.getObjectId("user");
+        ObjectId ogpostId = repostDoc.getObjectId("ogpost");
+
+        // Check if the user exists
+        Document userDoc = usersCollection.find(new Document("_id", userId)).first();
+        if (userDoc == null) {
+            throw new Exception("User with ID " + userId + " does not exist.");
+        }
+
+        // Check if the original post exists
+        Document originalPostDoc = postsCollection.find(new Document("_id", ogpostId)).first();
+        if (originalPostDoc == null) {
+            throw new Exception("Original post with ID " + ogpostId + " does not exist.");
+        }
+
+        // Delete the repost document from the reposts collection
+        repostsCollection.deleteOne(new Document("_id", repostId));
+
+        // Update the original post to remove the repost
+        postsCollection.updateOne(
+                new Document("_id", ogpostId),
+                new Document("$inc", new Document("num_reposts", -1))
+                        .append("$pull", new Document("reposts", repostId))
+        );
+
+        // Update the user's repost list
+        usersCollection.updateOne(
+                new Document("_id", userId),
+                new Document("$pull", new Document("reposts", repostId))
+        );
+    }
+
 
     /**
      * Method to like a post by a user.
@@ -888,7 +937,44 @@ public class Database {
         // Delete the group document from the groups collection
         groupsCollection.deleteOne(new Document("_id", groupId));
     }
+//#endregion
 
-    // TODO: All Retrieval Functions
+// All Retrieval Functions
+//#region
+    public MongoCollection<Document> getUsersCollection() {
+        return usersCollection;
+    }
+
+    public MongoCollection<Document> getPostsCollection() {
+        return postsCollection;
+    }
+
+    public MongoCollection<Document> getLoginsCollection() {
+        return loginsCollection;
+    }
+
+    public MongoCollection<Document> getRegistrationsCollection() {
+        return registrationsCollection;
+    }
+
+    public MongoCollection<Document> getGroupsCollection() {
+        return groupsCollection;
+    }
+
+    // TODO: Retrieve User Object from UserId
+
+    // TODO: Retrieve User Object from username
+
+    // TODO: Retrieve UserId from username
+
+    // TODO: Retrieve User Posts
+
+    // TODO: Retrieve User Reposts
+
+    // TODO: Retrieve User Posts and Reposts
+
+    // TODO: Retrieve User Posts and Reposts mixed
+
+//#endregion
 
 }
