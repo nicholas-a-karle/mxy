@@ -31,97 +31,113 @@ public class Post {
         this.database = database;
     }
 
+    public int memSize() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'memSize'");
+    }
+
     // Getters for fields
 
-    public ObjectId getPostId() {
+    public ObjectId getId() {
         return postId;
     }
 
     public ObjectId getUser() {
+        if (user == null) database.getPostUser(postId);
         return user;
     }
-
+    
     public String getText() {
+        if (text == null) database.getPostText(postId);
         return text;
     }
-
+    
     public Boolean isDeleted() {
+        if (deleted == null) database.getPostDeleted(postId);
         return deleted;
     }
-
+    
     public ObjectId getReplyTo() {
+        if (replyTo == null) database.getPostReplyTo(postId);
         return replyTo;
     }
-
+    
     public ObjectId getQuoted() {
+        if (quoted == null) database.getPostQuoted(postId);
         return quoted;
     }
-
+    
     public Integer getTimestamp() {
+        if (timestamp == null) database.getPostTimestamp(postId);
         return timestamp;
     }
-
+    
     public Integer getNumLikes() {
+        if (numLikes == null) database.getPostNumLikes(postId);
         return numLikes;
     }
-
+    
     public List<ObjectId> getLikes() {
+        if (likes == null) database.getPostLikes(postId);
         return likes;
     }
-
+    
     public Integer getNumReposts() {
+        if (numReposts == null) database.getPostNumReposts(user);
         return numReposts;
     }
-
+    
     public List<ObjectId> getReposts() {
+        if (reposts == null) database.getPostReposts(postId);
         return reposts;
     }
-
+    
     public Integer getNumQuotes() {
+        if (numQuotes == null) database.getPostNumQuotes(postId);
         return numQuotes;
     }
-
+    
     public ObjectId getQuotes() {
+        if (quotes == null) database.getPostQuotes(postId);
         return quotes;
     }
-
+    
     public Integer getNumReplies() {
+        if (numReplies == null) database.getPostNumReplies(postId);
         return numReplies;
     }
-
+    
     public Integer getNumDirectReplies() {
+        if (numDirectReplies == null) database.getPostNumDirectReplies(postId);
         return numDirectReplies;
     }
-
+    
     public List<ObjectId> getReplies() {
+        if (replies == null) database.getPostReplies(postId);
         return replies;
     }
+    
 
     // retrieveAll() method to populate all fields from database
 
     public void retrieveAll() {
-        Document postDoc = getPostById(postId);
-
-        // Populate fields from document
-        user = (ObjectId) postDoc.get("user");
-        text = postDoc.getString("text");
-        deleted = postDoc.getBoolean("deleted");
-        replyTo = (ObjectId) postDoc.get("replyto");
-        quoted = (ObjectId) postDoc.get("quoted");
-        timestamp = postDoc.getInteger("timestamp");
-        numLikes = postDoc.getInteger("numLikes");
-        likes = (List<ObjectId>) postDoc.get("likes");
-        numReposts = postDoc.getInteger("numReposts");
-        reposts = (List<ObjectId>) postDoc.get("reposts");
-        numQuotes = postDoc.getInteger("numQuotes");
-        quotes = (ObjectId) postDoc.get("quotes");
-        numReplies = postDoc.getInteger("numReplies");
-        numDirectReplies = postDoc.getInteger("numDirectReplies");
-        replies = (List<ObjectId>) postDoc.get("replies");
+        user = database.getPostUser(postId);
+        text = database.getPostText(postId);
+        deleted = database.getPostDeleted(postId);
+        replyTo = database.getPostReplyTo(postId);
+        quoted = database.getPostQuoted(postId);
+        timestamp = database.getPostTimestamp(postId);
+        numLikes = database.getPostNumLikes(postId);
+        likes = database.getPostLikes(postId);
+        numReposts = database.getPostNumReposts(postId);
+        reposts = database.getPostReposts(postId);
+        numQuotes = database.getPostNumQuotes(postId);
+        quotes = database.getPostQuotes(postId);
+        numReplies = database.getPostNumReplies(postId);
+        numDirectReplies = database.getPostNumDirectReplies(postId);
+        replies = database.getPostReplies(postId);
     }
 
-    // Helper method to retrieve post document from database
-    private Document getPostById(ObjectId postId) {
-        return database.getPostById(postId);
-    }
+    
+    
 }

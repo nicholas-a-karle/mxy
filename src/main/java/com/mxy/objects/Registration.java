@@ -8,27 +8,40 @@ import com.mxy.admin.Database;
 public class Registration {
     private ObjectId registrationId;
     private Database database;
+    private ObjectId user;
+    private Integer timestamp;
 
     public Registration(ObjectId registrationId, Database database) {
         this.registrationId = registrationId;
         this.database = database;
     }
 
-    // Getting the user of a registration by registrationId
-    public ObjectId getRegistrationUser() {
-        Document registrationDoc = getRegistrationById(registrationId);
-        return (ObjectId) registrationDoc.get("user");
+    public int memSize() {
+        int mem = 2;
+
+        mem += (user == null) ? 1 : 2;
+        mem += (timestamp == null) ? 1 : 2;
+
+        return mem;
+    }    
+
+    public ObjectId getId() {
+        return registrationId;
     }
 
-    // Getting the timestamp of a registration by registrationId
-    public Integer getRegistrationTimestamp() {
-        Document registrationDoc = getRegistrationById(registrationId);
-        return registrationDoc.getInteger("timestamp");
+    public ObjectId getUser() {
+        if (user == null) user = database.getRegistrationUser(registrationId);
+        return user;
     }
 
-    // Private method to retrieve registration document from the database
-    private Document getRegistrationById(ObjectId registrationId) {
-        // Assuming implementation of database retrieval
-        return database.getRegistrationById(registrationId); // Implement according to your database retrieval logic
+    public Integer getTimestamp() {
+        if (timestamp == null) timestamp = database.getRegistrationTimestamp(registrationId);
+        return timestamp;
     }
+
+    public void retrieveAll() {
+        timestamp = database.getRegistrationTimestamp(registrationId);
+        user = database.getRegistrationUser(registrationId);
+    }
+
 }

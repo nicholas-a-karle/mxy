@@ -1,5 +1,4 @@
-# Days of the Week Work
-
+# Days of Week One Work (1)
 ## Day One (Monday)
 ### Database Work
     Schema and Setup
@@ -14,10 +13,10 @@
     Joining Groups
 
 ## Day Two (Tuesday)
-    Flight
+    Flight, delayed and took all day
 
 ## Day Three (Wednesday)
-    Day off
+    Day off, too tired from flight
 
 ## Day Four (Thursday)
 ### Eek! 
@@ -28,7 +27,15 @@
     Registration
     Repost
     User
-###
+### Manager, Controller, Model
+    Manager (object memory and work)
+    Controller (edits and changes)
+        Functions
+        NOT DONE: Requests (saved for later version)
+    Model (display, sending to controller)
+    GUI started
 
 ## Day Five (Friday)
     GUI
+
+# Days of Week Two Work (2)

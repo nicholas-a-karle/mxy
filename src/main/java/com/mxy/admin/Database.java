@@ -143,6 +143,22 @@ public class Database {
         groupsCollection = mongoDatabase.getCollection("groups");
     }
 
+    public Database(String connection, String databaseName) {
+        // Connect to MongoDB server
+        mongoClient = MongoClients.create(connection);
+
+        // Select the database
+        mongoDatabase = mongoClient.getDatabase(databaseName);
+
+        // Initialize collections
+        usersCollection = mongoDatabase.getCollection("users");
+        postsCollection = mongoDatabase.getCollection("posts");
+        repostsCollection = mongoDatabase.getCollection("reposts");
+        loginsCollection = mongoDatabase.getCollection("logins");
+        registrationsCollection = mongoDatabase.getCollection("registrations");
+        groupsCollection = mongoDatabase.getCollection("groups");
+    }
+
 // All Modification Functions
 //#region
     /**
@@ -153,7 +169,7 @@ public class Database {
      * @param timestamp Moment of creation
      * @throws Exception If username is already taken or any MongoDB operation fails
      */
-    public void registerUser(String username, String hashword, int timestamp) throws Exception {
+    public void registerUser(String username, String hashword, long timestamp) throws Exception {
         // Check if the username already exists
         Document existingUser = usersCollection.find(new Document("username", username)).first();
         if (existingUser != null) {
@@ -270,7 +286,7 @@ public class Database {
      * @param timestamp Timestamp of when the post was created
      * @throws Exception If user does not exist or there is an error creating the post
      */
-    public void createPost(ObjectId userId, String text, int timestamp) throws Exception {
+    public void createPost(ObjectId userId, String text, long timestamp) throws Exception {
         // Check if the user exists
         Document userDoc = usersCollection.find(new Document("_id", userId)).first();
         if (userDoc == null) {
@@ -314,7 +330,7 @@ public class Database {
      * @param timestamp Timestamp of when the quote post was created.
      * @throws Exception If user does not exist, quoted post does not exist, or there is an error creating the quote post.
      */
-    public void createQuotePost(ObjectId userId, ObjectId quotedPostId, String text, int timestamp) throws Exception {
+    public void createQuotePost(ObjectId userId, ObjectId quotedPostId, String text, long timestamp) throws Exception {
         // Check if the user exists
         Document userDoc = usersCollection.find(new Document("_id", userId)).first();
         if (userDoc == null) {
@@ -373,7 +389,7 @@ public class Database {
      * @param timestamp Timestamp of when the reply post was created.
      * @throws Exception If user does not exist, reply-to post does not exist, or there is an error creating the reply post.
      */
-    public void createReply(ObjectId userId, ObjectId replyToPostId, String text, int timestamp) throws Exception {
+    public void createReply(ObjectId userId, ObjectId replyToPostId, String text, long timestamp) throws Exception {
         // Check if the user exists
         Document userDoc = usersCollection.find(new Document("_id", userId)).first();
         if (userDoc == null) {
@@ -540,7 +556,7 @@ public class Database {
      * @param timestamp Timestamp of when the repost was created
      * @throws Exception If user does not exist, original post does not exist, or there is an error creating the repost
      */
-    public void createRepost(ObjectId userId, ObjectId ogPostId, int timestamp) throws Exception {
+    public void createRepost(ObjectId userId, ObjectId ogPostId, long timestamp) throws Exception {
         // Check if the user exists
         Document userDoc = usersCollection.find(new Document("_id", userId)).first();
         if (userDoc == null) {

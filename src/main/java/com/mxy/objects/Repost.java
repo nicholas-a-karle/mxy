@@ -8,33 +8,50 @@ import com.mxy.admin.Database;
 public class Repost {
     private ObjectId repostId;
     private Database database;
+    private Integer timestamp;
+    private ObjectId user;
+    private ObjectId ogPost;
 
     public Repost(ObjectId repostId, Database database) {
         this.repostId = repostId;
         this.database = database;
     }
+    
+    public int memSize() {
+        int mem = 2;
+        
+        mem += (timestamp == null) ? 1 : 2;
+        mem += (user == null) ? 1 : 2;
+        mem += (ogPost == null) ? 1 : 2;
+
+        return mem;
+    }
+
+    public ObjectId getId() {
+        return repostId;
+    }
 
     // Getting the user of a repost by repostId
-    public ObjectId getRepostUser() {
-        Document repostDoc = getRepostById(repostId);
-        return (ObjectId) repostDoc.get("user");
+    public ObjectId getReposter() {
+        if (user == null) user = database.getRepostUser(repostId);
+        return user;
     }
 
     // Getting the original post of a repost by repostId
-    public ObjectId getRepostOgPost() {
-        Document repostDoc = getRepostById(repostId);
-        return (ObjectId) repostDoc.get("ogPost");
+    public ObjectId getOgPost() {
+        if (ogPost == null) ogPost = database.getRepostOgPost(repostId);
+        return ogPost;
     }
 
     // Getting the timestamp of a repost by repostId
-    public Integer getRepostTimestamp() {
-        Document repostDoc = getRepostById(repostId);
-        return repostDoc.getInteger("timestamp");
+    public Integer getTimestamp() {
+        if (timestamp == null) timestamp = database.getRepostTimestamp(repostId);
+        return timestamp;
     }
 
-    // Private method to retrieve repost document from the database
-    private Document getRepostById(ObjectId repostId) {
-        // Assuming implementation of database retrieval
-        return database.getRepostById(repostId); // Implement according to your database retrieval logic
+    public void retrieveAll() {
+        user = database.getRepostUser(repostId);
+        ogPost = database.getRepostOgPost(repostId);
+        timestamp = database.getRepostTimestamp(repostId);
     }
 }

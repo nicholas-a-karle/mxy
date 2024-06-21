@@ -36,24 +36,23 @@ public class User {
     // Using the classes since Java does references so I don't need to worry about stopping duplication
     private ObjectId userId;
     private String username;
-    private String hashword;
     private Integer numLogins;
-    private List<Login> logins;
+    private List<ObjectId> logins;
     private Login recentLogin;
     private Registration registration;
     private Integer numPostsReposts;
     private Integer numPosts;
-    private List<Post> posts;
+    private List<ObjectId> posts;
     private Integer numReposts;
-    private List<Repost> reposts;
+    private List<ObjectId> reposts;
     private Integer numFollowers;
-    private List<User> followers;
+    private List<ObjectId> followers;
     private Integer numFollowed;
-    private List<User> follows;
+    private List<ObjectId> follows;
     private Integer numUsergroups;
-    private List<Group> usergroups;
+    private List<ObjectId> usergroups;
     private Integer numLikes;
-    private List<Post> likes;
+    private List<ObjectId> likes;
     private Database database;
 
     public User(ObjectId userId, Database database) {
@@ -61,7 +60,32 @@ public class User {
         this.database = database;
     }
 
-    public ObjectId getuserId() {
+    public int memSize() {
+        int mem = 2;
+
+        mem += (username == null) ? 1 : username.length() + 1 ;
+        mem += (numLogins == null) ? 1 : 2 ;
+        mem += (logins == null) ? 1 : logins.size()  +1 ;
+        mem += (recentLogin == null) ? 1 : 2 ;
+        mem += (registration == null) ? 1 : 2 ;
+        mem += (numPostsReposts == null) ? 1 : 2 ;
+        mem += (numPosts == null) ? 1 : 2 ;
+        mem += (posts == null) ? 1 : 1 + posts.size() ;
+        mem += (numReposts == null) ? 1 : 2 ;
+        mem += (reposts == null) ? 1 : 1 + reposts.size() ;
+        mem += (numFollowers == null) ? 1 : 2 ;
+        mem += (followers == null) ? 1 : 1 + followers.size() ;
+        mem += (numFollowed == null) ? 1 : 2 ;
+        mem += (follows == null) ? 1 : 1 + follows.size() ;
+        mem += (numUsergroups == null) ? 1 : 2 ;
+        mem += (usergroups == null) ? 1 : 1 + usergroups.size() ;
+        mem += (numLikes == null) ? 1 : 2 ;
+        mem += (likes == null) ? 1 : 1 + likes.size() ;
+
+        return mem;
+    }
+
+    public ObjectId getId() {
         return userId;
     }
 
@@ -72,13 +96,6 @@ public class User {
         return username;
     }
 
-    public String getHashword() {
-        if (hashword == null) {
-            hashword = database.getUserHashword(userId);
-        }
-        return hashword;
-    }
-
     public Integer getNumLogins() {
         if (numLogins == null) {
             numLogins = database.getUserNumLogins(userId);
@@ -86,12 +103,12 @@ public class User {
         return numLogins;
     }
 
-    public List<Login> getLogins() {
+    public List<ObjectId> getLogins() {
         if (logins == null) {
             List<ObjectId> idLogins = database.getUserLogins(userId);
             logins = new ArrayList<>();
             for (ObjectId id : idLogins) {
-                logins.add(new Login(id, database));
+                logins.add(id);
             }
         }
         return logins;
@@ -131,12 +148,12 @@ public class User {
         return numPosts;
     }
 
-    public List<Post> getPosts() {
+    public List<ObjectId> getPosts() {
         if (posts == null) {
             List<ObjectId> postIds = database.getUserPosts(userId);
             posts = new ArrayList<>();
             for (ObjectId id : postIds) {
-                posts.add(new Post(id, database));
+                posts.add(id);
             }
         }
         return posts;
@@ -149,12 +166,12 @@ public class User {
         return numReposts;
     }
 
-    public List<Repost> getReposts() {
+    public List<ObjectId> getReposts() {
         if (reposts == null) {
             List<ObjectId> repostIds = database.getUserReposts(userId);
             reposts = new ArrayList<>();
             for (ObjectId id : repostIds) {
-                reposts.add(new Repost(id, database));
+                reposts.add(id);
             }
         }
         return reposts;
@@ -167,12 +184,12 @@ public class User {
         return numFollowers;
     }
 
-    public List<User> getFollowers() {
+    public List<ObjectId> getFollowers() {
         if (followers == null) {
             List<ObjectId> followerIds = database.getUserFollowers(userId);
             followers = new ArrayList<>();
             for (ObjectId id : followerIds) {
-                followers.add(new User(id, database));
+                followers.add(id);
             }
         }
         return followers;
@@ -185,12 +202,12 @@ public class User {
         return numFollowed;
     }
 
-    public List<User> getFollows() {
+    public List<ObjectId> getFollows() {
         if (follows == null) {
             List<ObjectId> followIds = database.getUserFollows(userId);
             follows = new ArrayList<>();
             for (ObjectId id : followIds) {
-                follows.add(new User(id, database));
+                follows.add(id);
             }
         }
         return follows;
@@ -203,12 +220,12 @@ public class User {
         return numUsergroups;
     }
 
-    public List<Group> getUsergroups() {
+    public List<ObjectId> getUsergroups() {
         if (usergroups == null) {
             List<ObjectId> groupIds = database.getUserUsergroups(userId);
             usergroups = new ArrayList<>();
             for (ObjectId id : groupIds) {
-                usergroups.add(new Group(id, database));
+                usergroups.add(id);
             }
         }
         return usergroups;
@@ -221,12 +238,12 @@ public class User {
         return numLikes;
     }
 
-    public List<Post> getLikes() {
+    public List<ObjectId> getLikes() {
         if (likes == null) {
             List<ObjectId> likeIds = database.getUserLikes(userId);
             likes = new ArrayList<>();
             for (ObjectId id : likeIds) {
-                likes.add(new Post(id, database));
+                likes.add(id);
             }
         }
         return likes;
@@ -234,14 +251,13 @@ public class User {
 
     public void retrieveAll() {
         username = database.getUserUsername(userId);
-        hashword = database.getUserHashword(userId);
         numLogins = database.getUserNumLogins(userId);
 
         // Retrieve Logins, recentLogin, and registration
         List<ObjectId> idLogins = database.getUserLogins(userId);
         logins = new ArrayList<>();
         for (ObjectId id : idLogins) {
-            logins.add(new Login(id, database));
+            logins.add(id);
         }
         ObjectId recentLoginId = database.getUserRecentLogin(userId);
         if (recentLoginId != null) recentLogin = new Login(recentLoginId, database);
@@ -255,7 +271,7 @@ public class User {
         List<ObjectId> postIds = database.getUserPosts(userId);
         posts = new ArrayList<>();
         for (ObjectId id : postIds) {
-            posts.add(new Post(id, database));
+            posts.add(id);
         }
     
         numReposts = database.getUserNumReposts(userId);
@@ -264,7 +280,7 @@ public class User {
         List<ObjectId> repostIds = database.getUserReposts(userId);
         reposts = new ArrayList<>();
         for (ObjectId id : repostIds) {
-            reposts.add(new Repost(id, database));
+            reposts.add(id);
         }
     
         numFollowers = database.getUserNumFollowers(userId);
@@ -273,7 +289,7 @@ public class User {
         List<ObjectId> followerIds = database.getUserFollowers(userId);
         followers = new ArrayList<>();
         for (ObjectId id : followerIds) {
-            followers.add(new User(id, database));
+            followers.add(id);
         }
     
         numFollowed = database.getUserNumFollowed(userId);
@@ -282,7 +298,7 @@ public class User {
         List<ObjectId> followIds = database.getUserFollows(userId);
         follows = new ArrayList<>();
         for (ObjectId id : followIds) {
-            follows.add(new User(id, database));
+            follows.add(id);
         }
     
         numUsergroups = database.getUserNumUsergroups(userId);
@@ -291,7 +307,7 @@ public class User {
         List<ObjectId> groupIds = database.getUserUsergroups(userId);
         usergroups = new ArrayList<>();
         for (ObjectId id : groupIds) {
-            usergroups.add(new Group(id, database));
+            usergroups.add(id);
         }
     
         numLikes = database.getUserNumLikes(userId);
@@ -300,7 +316,7 @@ public class User {
         List<ObjectId> likeIds = database.getUserLikes(userId);
         likes = new ArrayList<>();
         for (ObjectId id : likeIds) {
-            likes.add(new Post(id, database));
+            likes.add(id);
         }
     }
     
