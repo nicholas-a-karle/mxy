@@ -344,18 +344,15 @@ public class AdminDisplay {
     }
 
     protected void listGroups() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listGroups'");
+        GroupListDisplay groupListDisplay = new GroupListDisplay(controller);
     }
 
     protected void listUsers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listUsers'");
+        UsersListDisplay usersListDisplay = new UsersListDisplay(controller);
     }
 
-    protected void openAnalytics() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openAnalytics'");
+    protected void openAnalytics(String userId) {
+        AnalyticsDisplay analyticsDisplay = new AnalyticsDisplay(controller);
     }
 
     protected void joinGroup(String text) {

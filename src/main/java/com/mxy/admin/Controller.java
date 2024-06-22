@@ -129,19 +129,24 @@ public class Controller {
 
     public int getMetricNumUsers() {
         return -1;
+        // TODO: do
     }
 
     public int getMetricNumGroups() {
         return -1;
+        // TODO: do
     }
 
     public int getMetricFeedSize(ObjectId userId) {
         return -1;
+        // TODO: do
     }
     public int getMetricFeedSize(String userId) { return getMetricFeedSize(new ObjectId(userId)); }
+    public int getMetricFeedSize() { return getMetricFeedSize(currentUserId); }
 
     public double getMetricPositiveFeedProportion(ObjectId userId) {
         return -1;
+        // TODO: do
     }
     public double getMetricPositiveFeedProportion(String userId) { return getMetricPositiveFeedProportion(new ObjectId(userId)); }
     public double getMetricPositiveFeedProportion() { return getMetricPositiveFeedProportion(currentUserId); }
@@ -157,12 +162,6 @@ public class Controller {
         throw new UnsupportedOperationException("Unimplemented method 'addGrouptoGroup'");
     }
     public void addGrouptoGroup(String userGroupId1, String userGroupId2) { addGrouptoGroup(new ObjectId(userGroupId1), new ObjectId(userGroupId2)); }
-
-    public void openAnalytics() {
-        // Will handle itself
-        @SuppressWarnings("unused")
-        AnalyticsDisplay analyticsDisplay = new AnalyticsDisplay(this, currentUserId.toString());
-    }
 
     public String getFollowersListString(ObjectId userId) {
         // TODO Auto-generated method stub

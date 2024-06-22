@@ -7,12 +7,10 @@ import java.awt.*;
 public class AnalyticsDisplay {
 
     private Controller controller;
-    private String userId;
     private JFrame frame;
 
-    public AnalyticsDisplay(Controller controller, String userId) {
+    public AnalyticsDisplay(Controller controller) {
         this.controller = controller;
-        this.userId = userId;
 
         // Create the main frame
         frame = new JFrame("Analytics Display");
@@ -31,12 +29,12 @@ public class AnalyticsDisplay {
         frame.add(numGroupsLabel);
 
         // Display user feed size
-        JLabel feedSizeLabel = new JLabel("User Feed Size: " + controller.getMetricFeedSize(userId));
+        JLabel feedSizeLabel = new JLabel("User Feed Size: " + controller.getMetricFeedSize());
         feedSizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         frame.add(feedSizeLabel);
 
         // Display user feed positiveness
-        JLabel feedPositivenessLabel = new JLabel("User Feed Positiveness: " + controller.getMetricPositiveFeedProportion(userId));
+        JLabel feedPositivenessLabel = new JLabel("User Feed Positiveness: " + controller.getMetricPositiveFeedProportion());
         feedPositivenessLabel.setHorizontalAlignment(SwingConstants.CENTER);
         frame.add(feedPositivenessLabel);
 
