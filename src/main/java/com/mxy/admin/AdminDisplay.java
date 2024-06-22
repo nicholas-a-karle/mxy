@@ -5,13 +5,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdminDisplay {
 
-    @SuppressWarnings("unused")
     private Controller controller;
-    private ArrayList<String> consoleLines;
-    private ArrayList<String> feedLines;
+    private List<String> consoleLines;
+    private List<String> feedLines;
 
     // Text Fields
     private JTextArea consoleTextArea;
@@ -264,6 +264,42 @@ public class AdminDisplay {
             }
         });
 
+        // Post Creation
+        JLabel postLabel = new JLabel("Post");
+        JTextField postTextField = new JTextField(25);
+        JButton postSubmitButton = new JButton("Submit");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        controlPanel.add(postLabel, gbc);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        controlPanel.add(postTextField, gbc);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        controlPanel.add(postSubmitButton, gbc);
+
+        // Post Event Listener
+        postSubmitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                post(postTextField.getText());
+            }
+        });
+
         // Add empty filler component to push buttons to top
         JPanel emptyPanel = new JPanel();
         emptyPanel.setBackground(Color.LIGHT_GRAY);
@@ -343,36 +379,39 @@ public class AdminDisplay {
         fullUpdate();
     }
 
+    protected void post(String text) {
+        controller.addPost(text);
+    }
+
     protected void listGroups() {
+        @SuppressWarnings("unused")
         GroupListDisplay groupListDisplay = new GroupListDisplay(controller);
     }
 
     protected void listUsers() {
+        @SuppressWarnings("unused")
         UsersListDisplay usersListDisplay = new UsersListDisplay(controller);
     }
 
-    protected void openAnalytics(String userId) {
+    protected void openAnalytics() {
+        @SuppressWarnings("unused")
         AnalyticsDisplay analyticsDisplay = new AnalyticsDisplay(controller);
     }
 
-    protected void joinGroup(String text) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'joinGroup'");
+    protected void joinGroup(String groupId) {
+        controller.addUserToGroup(groupId);
     }
 
-    protected void createGroup(String text) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createGroup'");
+    protected void createGroup(String groupName) {
+        controller.createGroup(groupName);
     }
 
-    protected void followUser(String text) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'followUser'");
+    protected void followUser(String userId) {
+        controller.addFollow(userId);
     }
 
-    protected void createUser(String text) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createUser'");
+    protected void createUser(String username) {
+        controller.createUser(username, "");
     }
 
     public void fullUpdate() {
@@ -386,8 +425,8 @@ public class AdminDisplay {
     }
 
     private void updateConsoleListFromController() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateConsoleListFromController'");
+        // TODO
+        consoleLines = consoleLines;
     }
 
     public void updateConsoleDisplayFromList() {
@@ -400,8 +439,7 @@ public class AdminDisplay {
     }
     
     private void updateFeedListFromController() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateFeedListFromController'");
+        feedLines = controller.getFeed();
     }
 
     public void updateFeedDisplayFromList() {

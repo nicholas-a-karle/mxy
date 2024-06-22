@@ -1,12 +1,14 @@
 package com.mxy.admin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bson.types.ObjectId;
 
 import com.mxy.objects.Group;
 import com.mxy.objects.Manager;
+import com.mxy.objects.Post;
 import com.mxy.objects.User;
 
 /**
@@ -62,7 +64,7 @@ public class Controller {
         try {
             database.registerUser(username, createHashword(username + password), java.time.Instant.now().toEpochMilli());
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            // Auto-generate
             e.printStackTrace();
         }
     }
@@ -75,7 +77,7 @@ public class Controller {
         try {
             database.createUserGroup(groupname);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            // Auto-generate
             e.printStackTrace();
         }
     }
@@ -89,13 +91,12 @@ public class Controller {
         try {
             database.addUserToGroup(userId, groupId);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            // Auto-generate
             e.printStackTrace();
         }
     }
-    public void addUserToGroup(String userId, String groupId) {
-        addUserToGroup(new ObjectId(userId), new ObjectId(groupId));
-    }
+    public void addUserToGroup(String userId, String groupId) { addUserToGroup(new ObjectId(userId), new ObjectId(groupId)); }
+    public void addUserToGroup(String groupId) { addUserToGroup(currentUserId, new ObjectId(groupId));}
 
     /**
      * 
@@ -106,10 +107,11 @@ public class Controller {
         try {
             database.followUser(followerUserId, followedUserId);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
+    public void addFollow(String followedUserID) { addFollow(currentUserId, new ObjectId(followedUserID)); }
+
 
     /**
      * 
@@ -120,7 +122,7 @@ public class Controller {
         try {
             database.createPost(userId, text, 0);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            // Auto-generate
             e.printStackTrace();
         }
     }
@@ -128,28 +130,40 @@ public class Controller {
     public void addPost(String text) { addPost(currentUserId, text); }
 
     public int getMetricNumUsers() {
-        return -1;
-        // TODO: do
+        return manager.getAllUsers().size();
     }
 
     public int getMetricNumGroups() {
-        return -1;
-        // TODO: do
+        return manager.getAllGroups().size();
     }
 
     public int getMetricFeedSize(ObjectId userId) {
-        return -1;
-        // TODO: do
+        return getFeed(userId).size();
     }
     public int getMetricFeedSize(String userId) { return getMetricFeedSize(new ObjectId(userId)); }
     public int getMetricFeedSize() { return getMetricFeedSize(currentUserId); }
 
     public double getMetricPositiveFeedProportion(ObjectId userId) {
-        return -1;
-        // TODO: do
+        
+        List<String> feed = getFeed(userId);
+        int feedSize = feed.size();
+        int posCount = 0;
+
+        for (String post : feed) {
+            if (containsWord(post, Arrays.asList("Good", "Great", "Excellent"))) posCount++;
+        }
+
+        return (double) posCount / (double) feedSize;
     }
     public double getMetricPositiveFeedProportion(String userId) { return getMetricPositiveFeedProportion(new ObjectId(userId)); }
     public double getMetricPositiveFeedProportion() { return getMetricPositiveFeedProportion(currentUserId); }
+
+    public static boolean containsWord(String str, List<String> list) {
+        for (String word : list) {
+            if (str.contains(word)) return true;
+        }
+        return false;
+    }
 
     public String getUsername(ObjectId userId) {
         return manager.getUser(userId).getUsername();
@@ -158,31 +172,73 @@ public class Controller {
     public String getUsername() { return getUsername(this.currentUserId); }
 
     public void addGrouptoGroup(ObjectId usergroupId1, ObjectId usergroupId2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addGrouptoGroup'");
+        
+        Group group1 = manager.getGroup(usergroupId1);
+
+        for (ObjectId userId : group1.getUsers()) {
+
+            addUserToGroup(userId, usergroupId2);
+        }
+
     }
     public void addGrouptoGroup(String userGroupId1, String userGroupId2) { addGrouptoGroup(new ObjectId(userGroupId1), new ObjectId(userGroupId2)); }
 
     public String getFollowersListString(ObjectId userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFollowers'");
+        User user = new User(userId, database);
+        List<ObjectId> followerIds = user.getFollowers();
+        String listString = "";
+        for (ObjectId id : followerIds) {
+
+            User follower = manager.getUser(id);
+
+            listString += follower.getUsername() + "\n";
+
+        }
+        return listString;
     }
     public String getFollowersListString(String userId) { return getFollowersListString(new ObjectId(userId)); }
     public String getFollowersListString() { return getFollowersListString(currentUserId); }
 
     public String getFollowingListString(ObjectId userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFollowingListString'");
+        User user = new User(userId, database);
+        List<ObjectId> followIds = user.getFollows();
+        String listString = "";
+        for (ObjectId id : followIds) {
+
+            User follow = manager.getUser(id);
+
+            listString += follow.getUsername() + "\n";
+
+        }
+        return listString;
     }
     public String getFollowingListString(String userId) { return getFollowingListString(new ObjectId(userId)); }
     public String getFollowingListString() { return getFollowingListString(currentUserId); }
 
-    public ArrayList<String> getFeed(ObjectId userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFeed'");
+    public List<String> getFeed(ObjectId userId) {
+        User user = new User(userId, database);
+        List<ObjectId> feedPostersIds = user.getFollows();
+        feedPostersIds.add(userId);
+        List<ObjectId> posts = new ArrayList<>();
+        //List<ObjectId> reposts = new ArrayList<>();
+
+        for (ObjectId posterId : feedPostersIds) {
+            User poster = manager.getUser(posterId);
+            posts.addAll(poster.getPosts());
+            //reposts.addAll(poster.getReposts());
+        }
+
+        List<String> feed = new ArrayList<>();
+        for (ObjectId postId : posts) {
+            Post post = manager.getPost(postId);
+            String username = manager.getUser(post.getUser()).getUsername();
+            feed.add(username + ": " + post.getText());
+        }
+
+        return feed;
     }
-    public ArrayList<String> getFeed(String userId) { return getFeed(new ObjectId(userId)); }
-    public ArrayList<String> getFeed() { return getFeed(currentUserId); }
+    public List<String> getFeed(String userId) { return getFeed(new ObjectId(userId)); }
+    public List<String> getFeed() { return getFeed(currentUserId); }
 
     public boolean hasCurrentUser() { return currentUserId != null; }
 
