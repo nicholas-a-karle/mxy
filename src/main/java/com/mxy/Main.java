@@ -12,6 +12,7 @@ public class Main {
         Manager manager = new Manager(database);
         Controller controller = new Controller(database, manager);
 
+        @SuppressWarnings("unused")
         AdminDisplay adminDisplay = new AdminDisplay(controller);
 
     }

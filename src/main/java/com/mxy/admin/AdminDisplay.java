@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class AdminDisplay {
 
+    @SuppressWarnings("unused")
     private Controller controller;
     private ArrayList<String> consoleLines;
     private ArrayList<String> feedLines;

@@ -2,11 +2,11 @@ package com.mxy.admin;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GroupListDisplay {
 
+    @SuppressWarnings("unused")
     private Controller controller;
     private JFrame frame;
     private JTextArea textArea;
