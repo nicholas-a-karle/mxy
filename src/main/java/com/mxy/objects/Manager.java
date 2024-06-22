@@ -1,6 +1,8 @@
 package com.mxy.objects;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
@@ -158,6 +160,28 @@ public class Manager {
     public Repost getRepost(ObjectId repostId) {
         if (!reposts.containsKey(repostId)) addRepost(repostId);
         return reposts.get(repostId);
+    }
+
+    public List<User> getAllUsers() {
+        List<User> userList = new ArrayList<>();
+        List<ObjectId> idList = database.getAllUsers();
+
+        for (ObjectId id: idList) {
+            userList.add(new User(id, database));
+        }
+
+        return userList;
+    }
+
+    public List<Group> getAllGroups() {
+        List<Group> groupList = new ArrayList<>();
+        List<ObjectId> idList = database.getAllGroups();
+
+        for (ObjectId id: idList) {
+            groupList.add(new Group(id, database));
+        }
+
+        return groupList;
     }
 
     private int priorityCalc() {

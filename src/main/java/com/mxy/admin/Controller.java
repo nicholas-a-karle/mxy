@@ -1,8 +1,13 @@
 package com.mxy.admin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
+import com.mxy.objects.Group;
 import com.mxy.objects.Manager;
+import com.mxy.objects.User;
 
 /**
  * This class is meant to do the grunt work of control over the system
@@ -36,6 +41,7 @@ public class Controller {
 
     private Database database;
     private Manager manager;
+    private ObjectId currentUserId;
 
     public Controller(Database database, Manager manager) {
         this.database = database;
@@ -118,6 +124,8 @@ public class Controller {
             e.printStackTrace();
         }
     }
+    public void addPost(String userId, String text) { addPost(new ObjectId(userId), text); }
+    public void addPost(String text) { addPost(currentUserId, text); }
 
     public int getMetricNumUsers() {
         return -1;
@@ -130,34 +138,84 @@ public class Controller {
     public int getMetricFeedSize(ObjectId userId) {
         return -1;
     }
+    public int getMetricFeedSize(String userId) { return getMetricFeedSize(new ObjectId(userId)); }
 
     public double getMetricPositiveFeedProportion(ObjectId userId) {
         return -1;
     }
+    public double getMetricPositiveFeedProportion(String userId) { return getMetricPositiveFeedProportion(new ObjectId(userId)); }
+    public double getMetricPositiveFeedProportion() { return getMetricPositiveFeedProportion(currentUserId); }
 
-    public String getUsername(String userId) {
-        return manager.getUser(new ObjectId(userId)).getUsername();
+    public String getUsername(ObjectId userId) {
+        return manager.getUser(userId).getUsername();
     }
+    public String getUsername(String userId) { return getUsername(new ObjectId(userId)); }
+    public String getUsername() { return getUsername(this.currentUserId); }
 
-    public void addGrouptoGroup(String usergroupId1, String usergroupId2) {
+    public void addGrouptoGroup(ObjectId usergroupId1, ObjectId usergroupId2) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addGrouptoGroup'");
     }
+    public void addGrouptoGroup(String userGroupId1, String userGroupId2) { addGrouptoGroup(new ObjectId(userGroupId1), new ObjectId(userGroupId2)); }
 
     public void openAnalytics() {
         // Will handle itself
         @SuppressWarnings("unused")
-        AnalyticsDisplay analyticsDisplay = new AnalyticsDisplay(this);
+        AnalyticsDisplay analyticsDisplay = new AnalyticsDisplay(this, currentUserId.toString());
     }
 
-    public String getFollowersListString(String userId) {
+    public String getFollowersListString(ObjectId userId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getFollowers'");
     }
+    public String getFollowersListString(String userId) { return getFollowersListString(new ObjectId(userId)); }
+    public String getFollowersListString() { return getFollowersListString(currentUserId); }
 
-    public String getFollowingListString(String userId) {
+    public String getFollowingListString(ObjectId userId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getFollowingListString'");
     }
+    public String getFollowingListString(String userId) { return getFollowingListString(new ObjectId(userId)); }
+    public String getFollowingListString() { return getFollowingListString(currentUserId); }
+
+    public ArrayList<String> getFeed(ObjectId userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getFeed'");
+    }
+    public ArrayList<String> getFeed(String userId) { return getFeed(new ObjectId(userId)); }
+    public ArrayList<String> getFeed() { return getFeed(currentUserId); }
+
+    public boolean hasCurrentUser() { return currentUserId != null; }
+
+    public void setUser(ObjectId userId) { 
+        this.currentUserId = userId; 
+    }
+    public void setUser(String userId) { setUser(new ObjectId(userId)); }
+
+    public List<String> getUsersList() {
+        List<User> userList = manager.getAllUsers();
+        List<String> stringList = new ArrayList<>();
+
+        stringList.add("Username\t\t\tID");
+        for (User user : userList) {
+            stringList.add(user.getUsername() + " \t" + user.getId());
+        }
+
+        return stringList;
+    }
+
+    public List<String> getGroupsList() {
+        List<Group> groupList = manager.getAllGroups();
+        List<String> stringList = new ArrayList<>();
+
+        stringList.add("Groupname\t\t\tID");
+        for (Group group : groupList) {
+            stringList.add(group.getName() + " \t" + group.getId());
+        }
+
+        return stringList;
+    }
+
+
 
 }

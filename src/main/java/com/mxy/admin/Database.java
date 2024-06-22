@@ -1268,6 +1268,37 @@ public class Database {
         Document groupDoc = getGroupById(groupId);
         return (List<ObjectId>) groupDoc.get("users");
     }
+
+    // Getting all users
+    public List<ObjectId> getAllUsers() {
+        List<ObjectId> userIds = new ArrayList<>();
+
+        // Retrieve all documents from the collection
+        for (Document userDocument : usersCollection.find()) {
+            ObjectId userId = userDocument.getObjectId("_id");
+            if (userId != null) {
+                userIds.add(userId);
+            }
+        }
+
+        return userIds;
+    }
+
+    // Getting all groups
+    public List<ObjectId> getAllGroups() {
+        List<ObjectId> groupIds = new ArrayList<>();
+
+        // Retrieve all documents from the collection
+        for (Document groupDocument : groupsCollection.find()) {
+            ObjectId groupId = groupDocument.getObjectId("_id");
+            if (groupId != null) {
+                groupIds.add(groupId);
+            }
+        }
+
+        return groupIds;
+    }
+
 //#endregion
 
 }
