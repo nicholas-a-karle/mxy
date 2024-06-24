@@ -6,5 +6,4 @@ package com.mxy.user;
 public class Model {
     
 
-
 }

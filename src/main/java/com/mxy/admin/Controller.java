@@ -38,6 +38,16 @@ import com.mxy.objects.User;
  * 9. Output the total number of 'positive' messages
  * 
  */
+/** Early-2 Requirements
+ * 
+ * 1. Validate UserIds in Groups (fix?)
+ * 2. Validate GroupIds in Users (fix?)
+ * 3. Timestamp User Creations
+ * 4. Timestamp Group Creations
+ * 5. Timestamp User Updates
+ * 6. Find most recently updated User
+ * 
+ */
 
 public class Controller {
 
