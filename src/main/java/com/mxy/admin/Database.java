@@ -912,7 +912,7 @@ public class Database {
      * @param groupName Name of the new group
      * @throws Exception If a group with the same name already exists
      */
-    public void createUserGroup(String groupName) throws Exception {
+    public void createUserGroup(String groupName, Long timestamp) throws Exception {
         // Check if a group with the same name already exists
         Document existingGroup = groupsCollection.find(new Document("name", groupName)).first();
         if (existingGroup != null) {
@@ -924,7 +924,8 @@ public class Database {
         Document groupDoc = new Document("_id", groupId)
                 .append("name", groupName)
                 .append("numUsers", 0)
-                .append("users", new ArrayList<>());
+                .append("users", new ArrayList<>())
+                .append("timestamp", timestamp);
 
         // Insert the group document into the groups collection
         groupsCollection.insertOne(groupDoc);

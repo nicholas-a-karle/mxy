@@ -25,27 +25,35 @@ import com.mxy.objects.User;
  * There is no login required for this
  */
 
-/** Early Requirements
+/** Early-1 Requirements
  * 
- * 1. Create Users
- * 2. Create Usergroups
- * 3. Restrict Users to 1 Usergroup Each
- * 4. User Follow User
- * 5. Post short posts
- * 6. Output total number of Users
- * 7. Output total number of Usergroups
- * 8. Output total number of posts in each user's feed
- * 9. Output the total number of 'positive' messages
+ * 1. Create Users [x]
+ * 2. Create Usergroups [x]
+ * 3. Restrict Users to 1 Usergroup Each [x]
+ * 4. User Follow User [x]
+ * 5. Post short posts [x]
+ * 6. Output total number of Users [x]
+ * 7. Output total number of Usergroups [x]
+ * 8. Output total number of posts in each user's feed [x]
+ * 9. Output the total number of 'positive' messages [x]
  * 
  */
 /** Early-2 Requirements
  * 
  * 1. Validate UserIds in Groups (fix?)
  * 2. Validate GroupIds in Users (fix?)
- * 3. Timestamp User Creations
- * 4. Timestamp Group Creations
- * 5. Timestamp User Updates
+ * 3. Timestamp User Creations [x]
+ *      a. Add to display
+ * 4. Timestamp Group Creations [x]
+ *      a. Add to display
+ * 5. Timestamp User Updates (currently only posts)
  * 6. Find most recently updated User
+ * 
+ */
+/** Other
+ * 1. Make one of the following True:
+ *      a. Manager handles ALL Database work
+ *      b. This handles entry, Manager handles retrieval/in-memory data
  * 
  */
 
@@ -72,7 +80,7 @@ public class Controller {
      */
     public void createUser(String username, String password) {
         try {
-            database.registerUser(username, createHashword(username + password), java.time.Instant.now().toEpochMilli());
+            database.registerUser(username, createHashword(username + password), System.currentTimeMillis());
         } catch (Exception e) {
             // Auto-generate
             e.printStackTrace();
@@ -85,7 +93,7 @@ public class Controller {
      */
     public void createGroup(String groupname) {
         try {
-            database.createUserGroup(groupname);
+            database.createUserGroup(groupname, System.currentTimeMillis());
         } catch (Exception e) {
             // Auto-generate
             e.printStackTrace();
