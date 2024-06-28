@@ -46,8 +46,10 @@ import com.mxy.objects.User;
  *      a. Add to display
  * 4. Timestamp Group Creations [x]
  *      a. Add to display
- * 5. Timestamp User Updates (currently only posts)
+ * 5. Timestamp User Updates (currently only posts and usergroup additions and follows) [x]
+ *      a. Add to display
  * 6. Find most recently updated User
+ *      a. Add to display
  * 
  */
 /** Other
@@ -108,6 +110,7 @@ public class Controller {
     public void addUserToGroup(ObjectId userId, ObjectId groupId) {
         try {
             database.addUserToGroup(userId, groupId);
+            database.setUserUpdate(userId, System.currentTimeMillis());
         } catch (Exception e) {
             // Auto-generate
             e.printStackTrace();
@@ -124,6 +127,8 @@ public class Controller {
     public void addFollow(ObjectId followerUserId, ObjectId followedUserId) {
         try {
             database.followUser(followerUserId, followedUserId);
+            database.setUserUpdate(followerUserId, System.currentTimeMillis());
+            database.setUserUpdate(followerUserId, System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -139,6 +144,7 @@ public class Controller {
     public void addPost(ObjectId userId, String text) {
         try {
             database.createPost(userId, text, 0);
+            database.setUserUpdate(userId, System.currentTimeMillis());
         } catch (Exception e) {
             // Auto-generate
             e.printStackTrace();

@@ -206,7 +206,8 @@ public class Database {
                 .append("numUsergroups", 0)
                 .append("usergroups", new ArrayList<>())
                 .append("numLikes", 0)
-                .append("likes", new ArrayList<>());
+                .append("likes", new ArrayList<>())
+                .append("lastUpdateTimestamp", System.currentTimeMillis());
 
         // Insert the user document into the users collection
         usersCollection.insertOne(userDoc);
@@ -1298,6 +1299,13 @@ public class Database {
         }
 
         return groupIds;
+    }
+
+    public void setUserUpdate(ObjectId userId, long timeMillis) {
+        usersCollection.updateOne(
+            new Document("_id", userId),
+            new Document("lastUpdateTimestamp", timeMillis)
+        );
     }
 
 //#endregion
