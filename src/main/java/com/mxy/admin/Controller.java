@@ -43,13 +43,13 @@ import com.mxy.objects.User;
  * 1. Validate UserIds in Groups (fix?)
  * 2. Validate GroupIds in Users (fix?)
  * 3. Timestamp User Creations [x]
- *      a. Add to display
+ *      a. Add to display [x] (in list)
  * 4. Timestamp Group Creations [x]
- *      a. Add to display
+ *      a. Add to display [x] (in list)
  * 5. Timestamp User Updates (currently only posts and usergroup additions and follows) [x]
- *      a. Add to display
- * 6. Find most recently updated User
- *      a. Add to display
+ *      a. Add to display [x] (in list)
+ * 6. Find most recently updated User [x]
+ *      a. Add to display [x] (in list)
  * 
  */
 /** Other
@@ -64,10 +64,17 @@ public class Controller {
     private Database database;
     private Manager manager;
     private ObjectId currentUserId;
+    private List<String> consoleLines;
 
     public Controller(Database database, Manager manager) {
         this.database = database;
         this.manager = manager;
+        this.consoleLines = new ArrayList<>();
+        setUser(database.getAllUsers().get(0));
+    }
+
+    public void dislog(String line) {
+        this.consoleLines.add(line);
     }
 
     public static String createHashword(String input) {
@@ -110,7 +117,7 @@ public class Controller {
     public void addUserToGroup(ObjectId userId, ObjectId groupId) {
         try {
             database.addUserToGroup(userId, groupId);
-            database.setUserUpdate(userId, System.currentTimeMillis());
+            manager.setUserUpdate(userId, System.currentTimeMillis());
         } catch (Exception e) {
             // Auto-generate
             e.printStackTrace();
@@ -127,8 +134,8 @@ public class Controller {
     public void addFollow(ObjectId followerUserId, ObjectId followedUserId) {
         try {
             database.followUser(followerUserId, followedUserId);
-            database.setUserUpdate(followerUserId, System.currentTimeMillis());
-            database.setUserUpdate(followerUserId, System.currentTimeMillis());
+            manager.setUserUpdate(followerUserId, System.currentTimeMillis());
+            manager.setUserUpdate(followerUserId, System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -144,7 +151,7 @@ public class Controller {
     public void addPost(ObjectId userId, String text) {
         try {
             database.createPost(userId, text, 0);
-            database.setUserUpdate(userId, System.currentTimeMillis());
+            manager.setUserUpdate(userId, System.currentTimeMillis());
         } catch (Exception e) {
             // Auto-generate
             e.printStackTrace();
@@ -264,9 +271,15 @@ public class Controller {
     public List<String> getFeed(String userId) { return getFeed(new ObjectId(userId)); }
     public List<String> getFeed() { return getFeed(currentUserId); }
 
+    public List<String> getConsole() {
+        return consoleLines;
+    }
+
     public boolean hasCurrentUser() { return currentUserId != null; }
 
     public void setUser(ObjectId userId) { 
+        User user = manager.getUser(userId);
+        this.dislog("Current User Set to \t" + user.getUsername() + " \t" + user.getId().toString());
         this.currentUserId = userId; 
     }
     public void setUser(String userId) { setUser(new ObjectId(userId)); }
@@ -274,10 +287,13 @@ public class Controller {
     public List<String> getUsersList() {
         List<User> userList = manager.getAllUsers();
         List<String> stringList = new ArrayList<>();
+        User mostRecentlyUpdatedUser = manager.getMostRecentlyupdatedUser();
 
-        stringList.add("Username\t\t\tID");
+        stringList.add("Most Recently Updated User");
+        stringList.add(mostRecentlyUpdatedUser.getUsername() + " \t" + mostRecentlyUpdatedUser.getId());
+        stringList.add("Username\t\t\tID\t\tRegistration\t\tUpdate");
         for (User user : userList) {
-            stringList.add(user.getUsername() + " \t" + user.getId());
+            stringList.add(user.getUsername() + " \t" + user.getId() + "\t" + user.getRegistration().getTimestamp() + "\t" + user.getUpdateTimestamp());
         }
 
         return stringList;
@@ -287,9 +303,9 @@ public class Controller {
         List<Group> groupList = manager.getAllGroups();
         List<String> stringList = new ArrayList<>();
 
-        stringList.add("Groupname\t\t\tID");
+        stringList.add("Groupname\t\t\tID\t\tCreation");
         for (Group group : groupList) {
-            stringList.add(group.getName() + " \t" + group.getId());
+            stringList.add(group.getName() + " \t" + group.getId() + "\t" + group.getTimestamp());
         }
 
         return stringList;

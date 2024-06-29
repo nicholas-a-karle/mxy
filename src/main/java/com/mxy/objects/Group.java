@@ -13,6 +13,7 @@ public class Group {
     private String name;
     private Integer numUsers;
     private List<ObjectId> users;
+    private Long timestamp;
 
     public Group(ObjectId groupId, Database database) {
         this.groupId = groupId;
@@ -63,6 +64,13 @@ public class Group {
         name = database.getGroupName(groupId);
         numUsers = database.getGroupNumUsers(groupId);
         users = database.getGroupUsers(groupId);
+    }
+
+    public Long getTimestamp() {
+        if (timestamp == null) {
+            timestamp = database.getGroupTimestamp(groupId);
+        }
+        return timestamp;
     }
 
 }

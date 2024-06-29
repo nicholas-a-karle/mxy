@@ -43,7 +43,9 @@ public class UsersListDisplay {
     // Method to display users in the text area
     public void displayUsers(List<String> users) {
         StringBuilder sb = new StringBuilder();
+        System.out.println("\n\n"+users.size()+"\n\n");
         for (String user : users) {
+            System.out.println(user);
             sb.append(user).append("\n");
         }
         textArea.setText(sb.toString());

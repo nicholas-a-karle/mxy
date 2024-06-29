@@ -14,7 +14,7 @@ public class Post {
     private Boolean deleted;
     private ObjectId replyTo;
     private ObjectId quoted;
-    private Integer timestamp;
+    private Long timestamp;
     private Integer numLikes;
     private List<ObjectId> likes;
     private Integer numReposts;
@@ -32,8 +32,9 @@ public class Post {
     }
 
     public int memSize() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'memSize'");
+        // TODO Not done
+        System.out.println("Unimplemented method 'memSize'");
+        return 10;
     }
 
     // Getters for fields
@@ -43,77 +44,77 @@ public class Post {
     }
 
     public ObjectId getUser() {
-        if (user == null) database.getPostUser(postId);
+        if (user == null) user = database.getPostUser(postId);
         return user;
     }
     
     public String getText() {
-        if (text == null) database.getPostText(postId);
+        if (text == null) text = database.getPostText(postId);
         return text;
     }
     
     public Boolean isDeleted() {
-        if (deleted == null) database.getPostDeleted(postId);
+        if (deleted == null) deleted = database.getPostDeleted(postId);
         return deleted;
     }
     
     public ObjectId getReplyTo() {
-        if (replyTo == null) database.getPostReplyTo(postId);
+        if (replyTo == null) replyTo = database.getPostReplyTo(postId);
         return replyTo;
     }
     
     public ObjectId getQuoted() {
-        if (quoted == null) database.getPostQuoted(postId);
+        if (quoted == null) quoted = database.getPostQuoted(postId);
         return quoted;
     }
     
-    public Integer getTimestamp() {
-        if (timestamp == null) database.getPostTimestamp(postId);
+    public Long getTimestamp() {
+        if (timestamp == null) timestamp = database.getPostTimestamp(postId);
         return timestamp;
     }
     
     public Integer getNumLikes() {
-        if (numLikes == null) database.getPostNumLikes(postId);
+        if (numLikes == null) numLikes = database.getPostNumLikes(postId);
         return numLikes;
     }
     
     public List<ObjectId> getLikes() {
-        if (likes == null) database.getPostLikes(postId);
+        if (likes == null) likes = database.getPostLikes(postId);
         return likes;
     }
     
     public Integer getNumReposts() {
-        if (numReposts == null) database.getPostNumReposts(user);
+        if (numReposts == null) numReposts = database.getPostNumReposts(user);
         return numReposts;
     }
     
     public List<ObjectId> getReposts() {
-        if (reposts == null) database.getPostReposts(postId);
+        if (reposts == null) reposts = database.getPostReposts(postId);
         return reposts;
     }
     
     public Integer getNumQuotes() {
-        if (numQuotes == null) database.getPostNumQuotes(postId);
+        if (numQuotes == null) numQuotes = database.getPostNumQuotes(postId);
         return numQuotes;
     }
     
     public ObjectId getQuotes() {
-        if (quotes == null) database.getPostQuotes(postId);
+        if (quotes == null) quotes = database.getPostQuotes(postId);
         return quotes;
     }
     
     public Integer getNumReplies() {
-        if (numReplies == null) database.getPostNumReplies(postId);
+        if (numReplies == null) numReplies = database.getPostNumReplies(postId);
         return numReplies;
     }
     
     public Integer getNumDirectReplies() {
-        if (numDirectReplies == null) database.getPostNumDirectReplies(postId);
+        if (numDirectReplies == null) numDirectReplies = database.getPostNumDirectReplies(postId);
         return numDirectReplies;
     }
     
     public List<ObjectId> getReplies() {
-        if (replies == null) database.getPostReplies(postId);
+        if (replies == null) replies = database.getPostReplies(postId);
         return replies;
     }
     

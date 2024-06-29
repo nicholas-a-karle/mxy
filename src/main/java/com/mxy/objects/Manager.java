@@ -30,6 +30,7 @@ import com.mxy.admin.Database;
 public class Manager {
 
     private Map<ObjectId, User> users;
+    private ObjectId mostRecentlyUpdatedUserId;
     private Map<ObjectId, Post> posts;
     private Map<ObjectId, Login> logins;
     private Map<ObjectId, Registration> registrations;
@@ -48,8 +49,8 @@ public class Manager {
         registrations = new HashMap<>();
         groups = new HashMap<>();
         reposts = new HashMap<>();
-
         priorityQueue = new PriorityQueue<>(maxSize, (pw1, pw2) -> Long.compare(pw1.getPriority(), pw2.getPriority()));
+        mostRecentlyUpdatedUserId = database.getAllUsers().get(0);
         this.database = database;
     }
 
@@ -61,8 +62,8 @@ public class Manager {
         registrations = new HashMap<>();
         groups = new HashMap<>();
         reposts = new HashMap<>();
-
         priorityQueue = new PriorityQueue<>(maxSize, (pw1, pw2) -> Long.compare(pw1.getPriority(), pw2.getPriority()));
+        mostRecentlyUpdatedUserId = database.getAllUsers().get(0);
         this.database = database;
     }
 
@@ -282,5 +283,15 @@ public class Manager {
         public long getPriority() {
             return priority;
         }
+    }
+
+    public void setUserUpdate(ObjectId userId, long timeMillis) {
+        database.setUserUpdate(userId, timeMillis);
+        addUser(userId);
+        mostRecentlyUpdatedUserId = userId;
+    }
+
+    public User getMostRecentlyupdatedUser() {
+        return users.get(mostRecentlyUpdatedUserId);
     }
 }

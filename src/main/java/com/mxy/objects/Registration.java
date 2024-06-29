@@ -9,7 +9,7 @@ public class Registration {
     private ObjectId registrationId;
     private Database database;
     private ObjectId user;
-    private Integer timestamp;
+    private Long timestamp;
 
     public Registration(ObjectId registrationId, Database database) {
         this.registrationId = registrationId;
@@ -34,7 +34,7 @@ public class Registration {
         return user;
     }
 
-    public Integer getTimestamp() {
+    public Long getTimestamp() {
         if (timestamp == null) timestamp = database.getRegistrationTimestamp(registrationId);
         return timestamp;
     }

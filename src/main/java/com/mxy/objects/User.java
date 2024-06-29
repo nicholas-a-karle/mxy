@@ -54,6 +54,7 @@ public class User {
     private Integer numLikes;
     private List<ObjectId> likes;
     private Database database;
+    private Long updateTimestamp;
 
     public User(ObjectId userId, Database database) {
         this.userId = userId;
@@ -318,6 +319,13 @@ public class User {
         for (ObjectId id : likeIds) {
             likes.add(id);
         }
+    }
+
+    public Long getUpdateTimestamp() {
+        if (updateTimestamp == null) {
+            updateTimestamp = database.getUserUpdateTimestamp(userId);
+        }
+        return updateTimestamp;
     }
     
 }

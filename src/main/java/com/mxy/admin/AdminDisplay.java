@@ -22,9 +22,7 @@ public class AdminDisplay {
 
         // Initialize consoleLines and feedLines
         consoleLines = new ArrayList<>();
-        consoleLines.add("Admin Console Initiated");
         feedLines = new ArrayList<>();
-        feedLines.add("mxy Feed");
 
         // Create JFrame
         JFrame frame = new JFrame("Admin Display");
@@ -153,6 +151,8 @@ public class AdminDisplay {
             @Override
             public void actionPerformed(ActionEvent e) {
                 createUser(createUserTextField.getText());
+                updateConsole();
+                updateFeed();
             }
         });
 
@@ -189,6 +189,8 @@ public class AdminDisplay {
             @Override
             public void actionPerformed(ActionEvent e) {
                 followUser(followTextField.getText());
+                updateConsole();
+                updateFeed();
             }
         });
 
@@ -225,6 +227,8 @@ public class AdminDisplay {
             @Override
             public void actionPerformed(ActionEvent e) {
                 createGroup(createGroupTextField.getText());
+                updateConsole();
+                updateFeed();
             }
         });
 
@@ -261,6 +265,8 @@ public class AdminDisplay {
             @Override
             public void actionPerformed(ActionEvent e) {
                 joinGroup(joinGroupTextField.getText());
+                updateConsole();
+                updateFeed();
             }
         });
 
@@ -270,7 +276,7 @@ public class AdminDisplay {
         JButton postSubmitButton = new JButton("Submit");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 8;
         gbc.gridwidth = 1;
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -278,7 +284,7 @@ public class AdminDisplay {
         controlPanel.add(postLabel, gbc);
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 9;
         gbc.gridwidth = 1;
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -286,7 +292,7 @@ public class AdminDisplay {
         controlPanel.add(postTextField, gbc);
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 9;
         gbc.gridwidth = 1;
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -297,15 +303,55 @@ public class AdminDisplay {
             @Override
             public void actionPerformed(ActionEvent e) {
                 post(postTextField.getText());
+                updateConsole();
+                updateFeed();
             }
         });
+
+                // Switch User
+                JLabel switchLabel = new JLabel("Change User");
+                JTextField switchTextField = new JTextField(25);
+                JButton switchSubmitButton = new JButton("Submit");
+                gbc = new GridBagConstraints();
+                gbc.gridx = 0;
+                gbc.gridy = 10;
+                gbc.gridwidth = 1;
+                gbc.insets = new Insets(5, 5, 5, 5);
+                gbc.anchor = GridBagConstraints.NORTHWEST;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                controlPanel.add(switchLabel, gbc);
+                gbc = new GridBagConstraints();
+                gbc.gridx = 0;
+                gbc.gridy = 11;
+                gbc.gridwidth = 1;
+                gbc.insets = new Insets(5, 5, 5, 5);
+                gbc.anchor = GridBagConstraints.NORTHWEST;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                controlPanel.add(switchTextField, gbc);
+                gbc = new GridBagConstraints();
+                gbc.gridx = 1;
+                gbc.gridy = 11;
+                gbc.gridwidth = 1;
+                gbc.insets = new Insets(5, 5, 5, 5);
+                gbc.anchor = GridBagConstraints.NORTHWEST;
+                controlPanel.add(switchSubmitButton, gbc);
+        
+                // Switch Event Listener
+                switchSubmitButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        switchUser(switchTextField.getText());
+                        updateConsole();
+                        updateFeed();
+                    }
+                });
 
         // Add empty filler component to push buttons to top
         JPanel emptyPanel = new JPanel();
         emptyPanel.setBackground(Color.LIGHT_GRAY);
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 8;
+        gbc.gridy = 12;
         gbc.gridwidth = 2;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.VERTICAL;
@@ -316,7 +362,7 @@ public class AdminDisplay {
         JButton openAnalyticsButton = new JButton("Open Analytics");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 9;
+        gbc.gridy = 13;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -327,6 +373,8 @@ public class AdminDisplay {
             @Override
             public void actionPerformed(ActionEvent e) {
                 openAnalytics();
+                updateConsole();
+                updateFeed();
             }
         });
 
@@ -334,7 +382,7 @@ public class AdminDisplay {
         JButton listUsersButton = new JButton("List Users");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 10;
+        gbc.gridy = 14;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -345,6 +393,8 @@ public class AdminDisplay {
             @Override
             public void actionPerformed(ActionEvent e) {
                 listUsers();
+                updateConsole();
+                updateFeed();
             }
         });
 
@@ -352,7 +402,7 @@ public class AdminDisplay {
         JButton listGroupsButton = new JButton("List Groups");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 11;
+        gbc.gridy = 15;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -363,6 +413,8 @@ public class AdminDisplay {
             @Override
             public void actionPerformed(ActionEvent e) {
                 listGroups();
+                updateConsole();
+                updateFeed();
             }
         });
 
@@ -379,7 +431,13 @@ public class AdminDisplay {
         fullUpdate();
     }
 
+    protected void switchUser(String text) {
+        System.out.println("Attempting to Switch User to " + text);
+        controller.setUser(text);
+    }
+
     protected void post(String text) {
+        System.out.println("Attempting to post " + text);
         controller.addPost(text);
     }
 
@@ -426,7 +484,7 @@ public class AdminDisplay {
 
     private void updateConsoleListFromController() {
         // TODO
-        consoleLines = consoleLines;
+        consoleLines = controller.getConsole();
     }
 
     public void updateConsoleDisplayFromList() {

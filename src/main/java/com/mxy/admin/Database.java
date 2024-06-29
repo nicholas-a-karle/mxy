@@ -993,6 +993,7 @@ public class Database {
 
     public String getUserUsername(ObjectId userId) {
         Document userDoc = getUserById(userId);
+        System.out.println(userId);
         return userDoc.getString("username");
     }
 
@@ -1122,9 +1123,9 @@ public class Database {
     }
 
     // Getting the timestamp of a post by postId
-    public Integer getPostTimestamp(ObjectId postId) {
+    public Long getPostTimestamp(ObjectId postId) {
         Document postDoc = getPostById(postId);
-        return postDoc.getInteger("timestamp");
+        return postDoc.getLong("timestamp");
     }
 
     // Getting the number of likes of a post by postId
@@ -1242,9 +1243,9 @@ public class Database {
     }
 
     // Getting the timestamp of a registration by registrationId
-    public Integer getRegistrationTimestamp(ObjectId registrationId) {
+    public Long getRegistrationTimestamp(ObjectId registrationId) {
         Document registrationDoc = getRegistrationById(registrationId);
-        return registrationDoc.getInteger("timestamp");
+        return registrationDoc.getLong("timestamp");
     }
 
 
@@ -1304,8 +1305,18 @@ public class Database {
     public void setUserUpdate(ObjectId userId, long timeMillis) {
         usersCollection.updateOne(
             new Document("_id", userId),
-            new Document("lastUpdateTimestamp", timeMillis)
+            new Document("$set", new Document("lastUpdateTimestamp", timeMillis))
         );
+    }
+
+    public Long getGroupTimestamp(ObjectId groupId) {
+        Document groupDoc = getGroupById(groupId);
+        return groupDoc.getLong("timestamp");
+    }
+
+    public Long getUserUpdateTimestamp(ObjectId userId) {
+        Document userDoc = getUserById(userId);
+        return userDoc.getLong("lastUpdateTimestamp");
     }
 
 //#endregion
